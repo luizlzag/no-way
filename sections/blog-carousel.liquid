@@ -1,0 +1,384 @@
+{%- liquid
+  assign blog = blogs[section.settings.blog]
+  assign articles = blog.articles | default: (1..4)
+-%}
+
+
+<blog-carousel-component class="blog-carousel-section">
+  <script src="{{ 'section-blog-carousel.js' | asset_url }}" defer="defer"></script>
+  
+  <style>
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+      background-color: {{ section.settings.background_color }};
+    }
+
+    .blog-carousel-wrapper {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    @media screen and (min-width: 990px) {
+      .blog-carousel-wrapper {
+        grid-template-columns: 350px 1fr;
+        gap: 60px;
+        align-items: center;
+      }
+    }
+
+    @media screen and (max-width: 989px) {
+      .blog-carousel-wrapper {
+        flex-direction: column;
+      }
+      .blog-carousel__slider {
+        width: 100%;
+      }
+      .blog-carousel__slider .swiper-wrapper {
+        flex-direction: column;
+        gap: 24px;
+      }
+      .blog-carousel__slider .swiper-slide {
+        width: 100%;
+        max-width: 100%;
+      }
+      .blog-carousel__slider .swiper-slide:not(:last-child)::after {
+        content: '';
+        display: block;
+        height: 1px;
+        opacity: 0.4;
+        background: var(--VERDE, #656E52);
+      }
+    }
+
+    .blog-carousel__info {
+      text-align: left;
+    }
+
+    .blog-carousel__info h2 {
+      margin-bottom: 15px;
+    }
+
+    .blog-carousel__info .rte {
+      margin-top: 0;
+      margin-bottom: 30px;
+    }
+
+    .blog-carousel__header-footer {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: self-start;
+      gap: 30px;
+    }
+    .blog-carousel__footer-mobile {
+      display: none;
+    }
+
+    @media screen and (max-width: 989px) {
+      .blog-carousel__header-footer {
+        display: none;
+      }
+      .blog-carousel__footer-mobile {
+        display: block;
+        margin-top: 30px;
+        text-align: left;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .blog-carousel__header-footer {
+        flex-direction: column;
+        justify-content: space-between;
+      }
+    }
+
+    .blog-carousel__nav {
+      display: flex;
+      gap: 10px;
+    }
+
+    @media screen and (max-width: 989px) {
+      .blog-carousel__nav {
+        display: none;
+      }
+      .blog-carousel__slider .swiper-slide {
+        width: 100%;
+        max-width: 100% !important;
+      }
+    }
+
+    .blog-carousel__nav .slider-button {
+      position: static;
+      transform: none;
+      margin: 0;
+    }
+
+    .blog-carousel__slider {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .blog-carousel__slider .swiper-wrapper {
+      align-items: flex-start; /* Impede que os cards estiquem para a mesma altura */
+      padding-bottom: 10px; /* Adiciona um espaço caso a sombra do card seja cortada */
+    }
+
+    .blog-carousel__slider .swiper-slide {
+      height: auto; /* Permite que cada card tenha sua própria altura */
+      width: 384px; /* Define a largura fixa do card */
+      max-width: 85vw; /* Garante que o card não seja maior que a tela em dispositivos muito pequenos */
+    }
+
+    /* --- Novas Classes para o Card do Blog --- */
+    .blog-carousel-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      text-align: left;
+    }
+
+
+    .blog-carousel-card__image-link {
+      display: block;
+    }
+
+    .blog-carousel-card__image-wrapper {
+      width: 100%;
+      height: 260px;
+      overflow: hidden;
+    }
+
+    .blog-carousel-card__image {
+      border-radius: 16px;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .blog-carousel-card:hover .blog-carousel-card__image {
+      transform: scale(1.05);
+    }
+
+    .blog-carousel-card__content {
+      padding: 10px 0px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .blog-carousel-card__title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin: 0 0 10px 0;
+      line-height: 1.3;
+    }
+
+    .blog-carousel-card__title a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .blog-carousel-card__title a:hover {
+      text-decoration: underline;
+    }
+
+    .blog-carousel-card__excerpt {
+      font-size: 1.4rem;
+      color: rgba(var(--color-foreground), 0.75);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .blog-carousel__nav  svg{
+      width: 20px;
+      height: 20px;
+      fill: var(--VERDE, #656E52);
+     }
+     .blog-carousel__nav button{
+      border: 1px solid #656E52;
+      display: flex;
+      width: 32px;
+      height: 32px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+     } 
+  </style>
+
+  <div class="page-width">
+    <div class="blog-carousel-wrapper">
+      <div class="blog-carousel__info strong-color">
+        {%- if section.settings.title != blank -%}
+          <h2 class="title-section">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <div class="description">{{ section.settings.description }}</div>
+        {%- endif -%}
+
+        <div class="blog-carousel__header-footer">
+          {%- if section.settings.button_text != blank and section.settings.button_url != blank -%}
+            <a href="{{ section.settings.button_url }}" class="button-custom-primary">
+              {{ section.settings.button_text | escape }}
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M2.81903 9.18113C2.61631 8.97841 2.61631 8.64973 2.81903 8.44701L7.56127 3.70477L4.89907 3.70491C4.61238 3.70492 4.37996 3.47252 4.37994 3.18583C4.37993 2.89914 4.61233 2.66671 4.89902 2.6667L8.81453 2.6665C8.95221 2.6665 9.08426 2.72119 9.18162 2.81855C9.27897 2.9159 9.33367 3.04795 9.33366 3.18563L9.33346 7.10114C9.33345 7.38784 9.10103 7.62023 8.81433 7.62022C8.52764 7.62021 8.29524 7.38778 8.29526 7.10109L8.29539 4.43889L3.55316 9.18113C3.35043 9.38385 3.02176 9.38385 2.81903 9.18113Z" fill="white"/>
+              </svg>
+            </a>
+          {%- endif -%}
+          <div class="blog-carousel__nav slider-buttons">
+            <button class="slider-button slider-button--prev" name="previous" aria-label="{{ 'general.slider.previous_slide' | t }}">{% render 'icon-arrow-prev' %}</button>
+            <button class="slider-button slider-button--next" name="next" aria-label="{{ 'general.slider.next_slide' | t }}">{% render 'icon-arrow-next' %}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="blog-carousel__slider swiper">
+        <div class="swiper-wrapper">
+          {%- for article in articles limit: section.settings.post_limit -%}
+            <div class="swiper-slide">
+              <div class="blog-carousel-card">
+                {%- if article.image -%}
+                  <a href="{{ article.url }}" class="blog-carousel-card__image-link" aria-hidden="true" tabindex="-1">
+                    <div class="blog-carousel-card__image-wrapper">
+                      <img
+                        src="{{ article.image | image_url: width: 768 }}"
+                        alt="{{ article.image.alt | escape }}"
+                        width="384"
+                        height="260"
+                        loading="lazy"
+                        class="blog-carousel-card__image"
+                      >
+                    </div>
+                  </a>
+                {%- endif -%}
+                <div class="blog-carousel-card__content">
+                  <h3 class="blog-carousel-card__title">
+                    <a href="{{ article.url }}">{{ article.title | escape }}</a>
+                  </h3>
+                  <p class="blog-carousel-card__excerpt">
+                    {{ article.excerpt | default: article.content | strip_html | truncatewords: 20, "..." }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="blog-carousel__footer-mobile">
+        {%- if section.settings.button_text != blank and section.settings.button_url != blank -%}
+          <a href="{{ section.settings.button_url }}" class="button-custom-primary" style="display: inline-flex;">
+            {{ section.settings.button_text | escape }}
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M2.81903 9.18113C2.61631 8.97841 2.61631 8.64973 2.81903 8.44701L7.56127 3.70477L4.89907 3.70491C4.61238 3.70492 4.37996 3.47252 4.37994 3.18583C4.37993 2.89914 4.61233 2.66671 4.89902 2.6667L8.81453 2.6665C8.95221 2.6665 9.08426 2.72119 9.18162 2.81855C9.27897 2.9159 9.33367 3.04795 9.33366 3.18563L9.33346 7.10114C9.33345 7.38784 9.10103 7.62023 8.81433 7.62022C8.52764 7.62021 8.29524 7.38778 8.29526 7.10109L8.29539 4.43889L3.55316 9.18113C3.35043 9.38385 3.02176 9.38385 2.81903 9.18113Z" fill="white"/>
+            </svg>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</blog-carousel-component>
+
+{% schema %}
+    {
+        "name": "Blog Carousel",
+        "class": "section",
+        "settings": [
+           {
+                "type": "richtext",
+                "id": "title",
+                "label": "Título",
+                "default": "<p>Fique por dentro</p>"
+           },
+           {
+                "type": "richtext",
+                "id": "description",
+                "label": "Descrição",
+                "default": "<p>Acompanhe nosso blog para dicas, novidades e muito mais sobre nossos produtos e o mercado.</p>"
+           },
+           {
+                "type": "text",
+                "id": "button_text",
+                "label": "Texto do botão",
+                "default": "Ver todos"
+           },
+           {
+                "type": "url",
+                "id": "button_url",
+                "label": "URL do botão"
+           },
+           {
+                "type": "blog",
+                "id": "blog",
+                "label": "Blog"
+            },
+            {
+                "type": "range",
+                "id": "post_limit",
+                "min": 2,
+                "max": 12,
+                "step": 1,
+                "default": 6,
+                "label": "Máximo de posts para mostrar"
+            },
+            {
+                "type": "header",
+                "content": "Configurações do Card"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_date",
+                "default": true,
+                "label": "Mostrar data"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_author",
+                "default": false,
+                "label": "Mostrar autor"
+            },
+            {
+                "type": "header",
+                "content": "Cores e Espaçamento"
+            },
+            {
+                "type": "color",
+                "id": "background_color",
+                "label": "Cor de fundo da seção",
+                "default": "rgba(0,0,0,0)"
+            },
+            {
+                "type": "header",
+                "content": "Espaçamento da Seção"
+            },
+            {
+                "type": "range",
+                "id": "padding_top",
+                "min": 0,
+                "max": 100,
+                "step": 4,
+                "unit": "px",
+                "label": "Espaçamento superior",
+                "default": 36
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom",
+                "min": 0,
+                "max": 100,
+                "step": 4,
+                "unit": "px",
+                "label": "Espaçamento inferior",
+                "default": 36
+            }
+        ],
+        "presets": [
+            {
+                "name": "Blog Carousel"
+            }
+        ]
+    }
+{% endschema %}

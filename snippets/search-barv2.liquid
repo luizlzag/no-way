@@ -1,0 +1,330 @@
+{% comment %}
+  PASSO 1: O gatilho que ficará visível no seu header.
+  Este botão abrirá o modal de busca.
+{% endcomment %}
+<button type="button" class="search-modal__trigger header__icon" aria-haspopup="dialog" aria-expanded="false" aria-controls="SearchModal">
+  {% render 'search-icon-v2' %}
+  <span class="visually-hidden">Buscar</span>
+</button>
+
+{% comment %}
+  PASSO 2: A estrutura do Modal.
+  Ela fica escondida por padrão e contém a barra de busca.
+{% endcomment %}
+<div id="SearchModal" class="search-modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="search-modal__overlay"></div>
+  <div class="search-modal__content" data-predictive-search-container>
+    {% comment %}
+      Aqui dentro movemos a sua barra de busca original.
+      O JavaScript da busca preditiva vai funcionar aqui dentro sem problemas.
+    {% endcomment %}
+    <div class="search-modal__header">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-form-v2" data-predictive-search-form>
+        <div class="main-container-search-v2">
+          <input
+            type="search"
+            id="{{ input_id }}"
+            name="q"
+            class="search-input-v2"
+            placeholder="Digite o nome do produto..."
+            aria-label="Buscar"
+            aria-expanded="false"
+            data-predictive-search-input
+            autocomplete="off"
+          >
+          <button type="submit" class="search-button-v2" aria-label="Buscar">
+            {% render 'search-icon-v2' %}
+          </button>
+        </div>
+      </form>
+      <button type="button" class="search-modal__close-button " aria-label="Fechar modal de busca">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="predictive-search-results-v2" data-predictive-search-results hidden>
+      {% comment %} Os resultados da busca preditiva serão inseridos aqui pelo JavaScript. {% endcomment %}
+    </div>
+  </div>
+</div>
+
+
+{% comment %}
+  PASSO 3: Os estilos CSS para o gatilho e o modal.
+  Coloque isso junto com o seu CSS existente.
+{% endcomment %}
+<style>
+  /* Estilo para o ícone de lupa (gatilho) */
+  .search-modal__trigger {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Esconde visualmente mas mantém acessível para leitores de tela */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  /* --- Estilos do Modal --- */
+  .search-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 15vh;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
+  }
+  @media screen and (min-width: 1024px) {
+    .search-modal {
+      left: 55vh;
+    }
+  }
+ 
+
+  .search-modal.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* Bloqueia o scroll da página quando o modal está aberto */
+  body.modal-open {
+    overflow: hidden;
+  }
+
+  .search-modal__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+
+  .search-modal__content {
+    background-color: rgb(var(--color-background));
+    position: relative;
+    border-radius: 12px;    
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    padding: 80px 24px 24px 24px; 
+  }
+
+  .search-modal__header {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    background: var(--BEGE, #EAE1D8);
+    border-radius: 16px 16px 0px 0px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+  
+  .search-modal__close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 3px;
+    color: #888;
+    flex-shrink: 0; /* Impede que o botão encolha */
+  }
+  .search-modal__close-button:hover {
+    color: #000;
+  }
+
+
+  /* --- Ajustes nos seus estilos originais para funcionar dentro do modal --- */
+  .search-form-v2 {
+    flex-grow: 1; /* Faz o formulário ocupar o espaço disponível */
+    transition: none; /* Não precisa mais da transição de largura */
+    position: relative; /* Necessário para o z-index */
+    z-index: 3;
+  }
+
+  .main-container-search-v2 {
+    display: flex;
+    align-items: center;
+    transition: border-color 0.2s;
+    position: relative;
+    z-index: 3;
+    border-radius: 12px;
+  }
+
+  .search-input-v2 {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    height: 60px;
+    font-size: 16px;
+  }
+  
+  /* Remove o 'X' padrão que navegadores Webkit (Chrome, Safari) adicionam em inputs do tipo 'search' */
+  .search-input-v2::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+  }
+
+  .search-input-v2::placeholder {
+    color: #B3B3B3;
+  }
+
+  .search-button-v2 {
+    display: none;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .predictive-search-results-v2 {
+    position: absolute;
+    top: 10%;
+    left: 0%;
+    background: transparent;
+    z-index: 2;
+    max-height: 60vh;
+    width: 90%;
+    overflow-y: auto;
+  }
+
+  /* Estilos dos itens de resultado (mantive os seus e adicionei alguns detalhes) */
+  .predictive-search-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.2s;
+  }
+  .predictive-search-item:hover {
+    background-color: #f5f5f5;
+  }
+  .predictive-search-item__image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 12px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .predictive-search-item__info {
+    display: flex;
+    flex-direction: column;
+  }
+  .predictive-search-item__title {
+    color: var(--BLACK, #0D0D0E);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+  }
+  .predictive-search-item__price {
+    color: black;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .old_price_predictive{
+    color: var(--Gray-500, #4B4B53);
+    font-size: 12px;
+    font-weight: 300;
+    text-decoration-line: line-through;
+    margin-right: 5px;
+  }
+  .predictive-price-search{
+    display: flex;
+    align-items: center;
+  }
+
+  @media screen and (max-width: 1024px) {
+    .search-modal__content {
+      height: 100%;
+
+    }
+    .predictive-search-results-v2 {
+      top: 15%;
+    }
+  }
+</style>
+
+
+{% comment %}
+  PASSO 4: O JavaScript para controlar o modal.
+  Este script é novo e focado apenas em abrir/fechar o modal.
+{% endcomment %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchModal = document.getElementById('SearchModal');
+  if (!searchModal) return;
+
+  const modalTriggers = document.querySelectorAll('.search-modal__trigger');
+  const closeButton = searchModal.querySelector('.search-modal__close-button');
+  const overlay = searchModal.querySelector('.search-modal__overlay');
+  const searchInput = searchModal.querySelector('[data-predictive-search-input]');
+
+  const openModal = () => {
+    searchModal.classList.add('is-open');
+    searchModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    // Foca no campo de busca assim que o modal abre para o usuário já poder digitar
+    setTimeout(() => {
+        searchInput.focus();
+    }, 300); // pequeno delay para aguardar a transição do CSS
+  };
+
+  const closeModal = () => {
+    searchModal.classList.remove('is-open');
+    searchModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+    // Limpa o campo e esconde os resultados ao fechar
+    searchInput.value = '';
+    const resultsContainer = searchModal.querySelector('[data-predictive-search-results]');
+    if (resultsContainer) {
+        resultsContainer.innerHTML = '';
+        resultsContainer.hidden = true;
+    }
+  };
+
+  modalTriggers.forEach(trigger => {
+    trigger.addEventListener('click', openModal);
+  });
+
+  closeButton.addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
+
+  // Fecha o modal com a tecla 'Escape'
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && searchModal.classList.contains('is-open')) {
+      closeModal();
+    }
+  });
+});
+</script>

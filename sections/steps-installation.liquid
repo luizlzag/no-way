@@ -1,0 +1,193 @@
+{%- liquid
+  assign section_settings = section.settings
+  assign blocks = section.blocks
+-%}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+
+  .steps-installation__header {
+    text-align: start;
+    margin-bottom: 40px;
+  }
+
+  .steps-installation__subtitle {
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    opacity: 0.3;
+    color: black;
+  }
+
+
+  .steps-installation__wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    position: relative;
+  }
+
+  .steps-installation__wrapper::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #656E52;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+
+  .step-card {
+    width: 389px;
+    height: 440px;
+    flex: 1 0 0;
+    padding: 32px;
+    text-align: center;
+    background-color: {{ section_settings.color_cards }};
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    align-self: stretch;
+  }
+
+  .step-card__step-text {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 150%; /* 24px */
+    margin-bottom: 16px;
+    color: var(--PRETO, #000);
+    opacity: 0.3;
+  }
+
+  .step-card__title {
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 120%; /* 38.4px */
+    margin-bottom: 16px;
+    color: {{ section_settings.color_text_cards_title }};
+  }
+
+  .step-card__description {
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%; /* 25.2px */
+    color: {{ section_settings.color_text_cards_description }};
+    margin: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    .steps-installation__wrapper {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 80%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 1rem; /* Espaço para a barra de rolagem */
+      justify-content: flex-start; /* Alinha os cards no início */
+    }
+
+    .steps-installation__wrapper::before {
+      display: none; /* Remove a linha no mobile */
+    }
+
+    .step-card {
+      scroll-snap-align: start;
+      width: 100%; /* Ocupa a largura definida no grid-auto-columns */
+      height: auto; /* Altura automática para se ajustar ao conteúdo */
+      min-height: 400px;
+    }
+  }
+</style>
+
+<div class="page-width">
+  <div class="steps-installation__header">
+    {%- if section_settings.subtitle != blank -%}
+      <p class="steps-installation__subtitle subtitle-section">{{ section_settings.subtitle }}</p>
+    {%- endif -%}
+    {%- if section_settings.title != blank -%}
+      <div class="steps-installation__title title-section strong-color">{{ section_settings.title }}</div>
+    {%- endif -%}
+  </div>
+
+  {%- if blocks.size > 0 -%}
+    <div class="steps-installation__wrapper">
+      {%- for block in blocks -%}
+        <div class="step-card" {{ block.shopify_attributes }}>
+          <p class="step-card__step-text">{{ block.settings.step_text }}</p>
+          <h3 class="step-card__title">{{ block.settings.title }}</h3>
+          <p class="step-card__description">{{ block.settings.description }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+    {
+        "name": "Passos da Instalação",
+        "settings": [
+            {
+                "type": "richtext",
+                "id": "title",
+                "label": "Título"
+            },
+            {
+                "type": "text",
+                "id": "subtitle",
+                "label": "Subtítulo"
+            },
+            {
+                "type": "color",
+                "id": "color_cards",
+                "label": "Cor de fundo dos cards"
+            },
+            {
+                "type": "color",
+                "id": "color_text_cards_title",
+                "label": "Cor do texto dos cards titulo"
+            },
+            {
+                "type": "color",
+                "id": "color_text_cards_description",
+                "label": "Cor do texto dos cards descrição"
+            }
+        ],"blocks": [
+          {
+            "type": "step",
+            "name": "Passo",
+            "limit": 3,
+            "settings": [
+             {
+                    "type": "text",
+                    "id": "step_text",
+                    "label": "Texto do passo"
+             },
+              {
+                "type": "text",
+                "id": "title",
+                "label": "Título"
+              },
+              {
+                "type": "text",
+                "id": "description",
+                "label": "Descrição"
+              }
+            ]
+          }
+        ],"presets": [
+            {
+                "name": "Passos da Instalação"
+            }
+        ]
+    }
+{% endschema %}

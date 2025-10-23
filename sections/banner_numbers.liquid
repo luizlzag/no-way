@@ -1,0 +1,251 @@
+<div class="spacer-{{ section.id }}-top">&nbsp;</div>
+    <div class="banner-numbers-main-container-{{ section.id }}" data-section-id="{{ section.id }}" data-counter-section>
+        <img class="banner-numbers-image-{{ section.id }}" src="{{ section.settings.image | image_url: width: 1920 }}" alt="{{ section.settings.title }}" width="100%" height="auto">
+        <div class="banner-numbers-content-{{ section.id }}">
+            <div class="banner-numbers-content-item-{{ section.id }} banner-numbers-text-block-{{ section.id }}">
+            {{ section.settings.title_description_section  }}
+            </div>
+            <div class="banner-numbers-numbers-container-{{ section.id }}">
+                <div class="banner-numbers-content-item-{{ section.id }}">
+                    <h2 class="b-n-number-{{ section.id }}" data-counter-target="{% if section.settings.number > 0 %}{{ section.settings.number }}{% else %}{{ product.metafields.custom.banner_2_porcentagem_1.value }}{% endif %}"data-counter-percentage>0%</h2>
+                    <div class="b-n-number-text-{{ section.id }}">{{ section.settings.number_text }}</div>
+                </div>
+                <div class="banner-numbers-content-item-{{ section.id }}">
+                    <h2 class="b-n-number-{{ section.id }}" data-counter-target="{% if section.settings.number_2 > 0 %}{{ section.settings.number_2 }}{% else %}{{ product.metafields.custom.banner_2_porcentagem_2.value }}{% endif %}" data-counter-percentage>0%</h2>
+                    <div class="b-n-number-text-{{ section.id }}">{{ section.settings.number_text_2 }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="spacer-{{ section.id }}-bottom">&nbsp;</div>
+ 
+  {% style %}
+  .banner-numbers-numbers-container-{{ section.id }}{
+    display: flex;
+    width: 50%;
+  }
+  .spacer-{{ section.id }}-top{
+    padding-top: {{ section.settings.padding_space }}px;
+  }
+  .spacer-{{ section.id }}-bottom{
+    padding-bottom: {{ section.settings.padding_space }}px;
+  }
+  @media (max-width: 749px){
+    .spacer-{{ section.id }}-top{
+      padding-top: {{ section.settings.padding_space_mobile }}px;
+    }
+    .spacer-{{ section.id }}-bottom{
+      padding-bottom: {{ section.settings.padding_space_mobile_bottom }}px;
+    }
+  }
+    .banner-numbers-main-container-{{ section.id }}{
+      position: relative; /* ANCORA: Essencial para posicionar o conteúdo sobre a imagem */
+      line-height: 0; /* CORREÇÃO: Remove espaço extra abaixo da imagem */
+    }
+  
+    .banner-numbers-image-{{ section.id }}{
+      height: 600px;
+      width: 100%; /* GARANTIA: Imagem ocupa toda a largura */
+      object-fit: cover;
+    }
+  
+    .banner-numbers-content-{{ section.id }}{
+      position: absolute;
+      bottom: -25%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 1210px;
+      display: flex;
+      justify-content: space-between; 
+      padding: 40px 5%;
+      background-color: {{ section.settings.color_background }};
+      align-items: center;
+      box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+    }
+  
+    .banner-numbers-content-{{ section.id }} h2,
+    .banner-numbers-content-{{ section.id }} p,
+    .banner-numbers-content-{{ section.id }} div {
+      color: {{ section.settings.color_text }};
+      margin: 0;
+      line-height: 1.3; /* GARANTIA: Boa legibilidade */
+    }
+  
+    /* Bloco de texto à esquerda */
+    .banner-numbers-text-block-{{ section.id }} {
+      flex: 2; /* ALTERAÇÃO: Faz o bloco de texto ocupar mais espaço */
+      font-size: 20px;
+      text-align: left;
+      line-height: 130%; /* 26px */
+    }
+    .banner-numbers-text-block-{{ section.id }} p {
+      font-size: 20px; /* Garante o tamanho da fonte para o parágrafo */
+      text-align: left;
+      line-height: 130%; /* 26px */
+    }
+  
+    /* Blocos de números */
+    .banner-numbers-content-item-{{ section.id }}{
+      flex: 1; /* ALTERAÇÃO: Faz os blocos de número ocuparem menos espaço */
+      text-align: center;
+    }
+  
+    .b-n-number-{{ section.id }}{
+      text-align: center;
+      font-size: 80px;
+      font-style: normal;
+      font-weight: 900;
+      line-height: 1.1; 
+      transition: all 0.3s ease;
+    }
+    
+    .b-n-number-text-{{ section.id }} {
+      font-size: 16px;
+      line-height: 130%;
+    }
+    
+    /* Estados de animação (sem alterações) */
+    .banner-numbers-main-container-{{ section.id }}.counter-animation-active {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+    
+    .b-n-number-{{ section.id }}.counter-counting {
+      animation: pulse 0.5s ease-in-out;
+      color: {{ section.settings.color_text | color_lighten: 20 }};
+    }
+    
+    .b-n-number-{{ section.id }}.counter-complete {
+      transform: scale(1.02);
+      transition: transform 0.3s ease;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Responsividade */
+    @media (max-width: 990px) {
+      .banner-numbers-content-{{ section.id }} {
+        width: 95%;
+        padding: 30px 3%;
+        gap: 30px;
+      }
+      .b-n-number-{{ section.id }} {
+        font-size: 60px;
+      }
+      .banner-numbers-text-block-{{ section.id }},
+      .b-n-number-text-{{ section.id }} {
+        font-size: 14px;
+      }
+    }
+  
+    @media (max-width: 768px) {
+        .banner-numbers-numbers-container-{{ section.id }}{
+            width: 100%;
+        }
+      .banner-numbers-image-{{ section.id }}{
+        height: 500px; /* AJUSTE: Imagem um pouco menor em telas mobile */
+      }
+      .banner-numbers-content-{{ section.id }} {
+        position: absolute; /* MANTÉM posicionamento absoluto para centralização */
+        left: 50%;
+        bottom: -55%;
+        transform: translateX(-50%);
+        width: 95%;
+        flex-direction: column;
+        padding: 24px;
+        gap: 30px;
+        text-align: center;
+      }
+      .banner-numbers-text-block-{{ section.id }} {
+         text-align: center; /* Centraliza texto descritivo no mobile */
+      }
+    }
+  {% endstyle %}
+  
+  {% schema %}
+    {
+      "name": "Banner Numbers",
+      "settings": [
+        {
+            "type": "number",
+            "id":"padding_space",
+            "label": "Padding Space",
+            "default": 50
+          },
+          {
+            "type": "number",
+            "id":"padding_space_mobile",
+            "label": "Padding Space Mobile",
+            "default": 30
+          },
+          {
+            "type": "number",
+            "id":"padding_space_mobile_bottom",
+            "label": "Padding Space Mobile Bottom",
+            "default": 30
+          },
+        {
+          "type": "richtext",
+          "id": "title_description_section",
+          "label": "Descrição"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Imagem"
+        },
+        {
+          "type": "number",
+          "id": "number",
+          "label": "Número",
+          "default": 85
+        },
+        {
+          "type": "richtext",
+          "id": "number_text",
+          "label": "Texto do número"
+        },
+        {
+          "type": "number",
+          "id": "number_2",
+          "label": "Número 2",
+          "default": 95
+        },
+        {
+          "type": "richtext",
+          "id": "number_text_2",
+          "label": "Texto do número 2"
+        },
+        {
+          "type": "color",
+          "id": "color_background",
+          "label": "Cor de fundo"
+        },
+        {
+          "type": "color",
+          "id": "color_text",
+          "label": "Cor do texto"
+        }
+      ],
+      "presets": [
+        {
+          "name": "Banner Numbers"
+        }
+      ]
+    }
+  {% endschema %}

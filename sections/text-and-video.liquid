@@ -1,0 +1,171 @@
+<div class="text-and-video-{{ section.id }} page-width">
+    <div class="text-and-video_content-{{ section.id }}">
+        <div class="text-and-video_content-{{ section.id }}_text strong-color">
+            <p class="subtitle-section">{{ section.settings.subtitle }}</p>
+            <h2 class="title-section">{{ section.settings.title }}</h2>
+            <p class="description">{{ section.settings.description }}</p>
+        </div>
+        <div class="text-and-video_video-wrapper-{{ section.id }}">
+            {{ section.settings.video | video_tag: image_size: '400x',playsinline: true, controls: false, loop: true, muted: true, class: 'text-and-video_video-element' }}
+            <button class="video-play-button" aria-label="{{ 'products.product.media.play_video' | t }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 45 45" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M33.9779 19.2876C36.5063 20.7474 36.5063 24.3968 33.9779 25.8565L17.724 35.2407C15.1956 36.7005 12.0352 34.8757 12.0352 31.9562L12.0352 13.1879C12.0352 10.2684 15.1956 8.44365 17.724 9.90341L33.9779 19.2876ZM32.3525 23.0413C32.7137 22.8327 32.7137 22.3114 32.3525 22.1028L16.0986 12.7187C15.7374 12.5101 15.2859 12.7708 15.2859 13.1879L15.2859 31.9562C15.2859 32.3733 15.7374 32.634 16.0986 32.4254L32.3525 23.0413Z" fill="#656E52"/></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .text-and-video_content-{{ section.id }} {
+        display: flex;
+        gap: 60px;
+        align-items: center;
+        padding: 50px 0;
+    }
+    .text-and-video_content-{{ section.id }}_text {
+        flex: 1;
+    }
+    .text-and-video_video-wrapper-{{ section.id }} {
+        position: relative;
+        flex: 1;
+        max-width: 646px;
+        cursor: pointer;
+    }
+    .text-and-video_video-wrapper-{{ section.id }} .text-and-video_video-element {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        border-radius: 16px;
+        object-fit: cover;
+        display: block;
+    }
+    .text-and-video_video-wrapper-{{ section.id }}.is-playing .text-and-video_video-element {
+        /* Permite que o clique no vídeo seja detectado mesmo com os controles nativos */
+        cursor: default;
+    }
+    .text-and-video_video-wrapper-{{ section.id }} .video-play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.8);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        z-index: 1;
+    }
+    .text-and-video_content-{{ section.id }}_text .subtitle-section {
+        color: {{ section.settings.color_subtitle }};
+    }
+    .text-and-video_content-{{ section.id }}_text .title-section {
+        color: {{ section.settings.color_title }};
+    }
+    .text-and-video_content-{{ section.id }}_text .description {
+        color: {{ section.settings.color_description }};
+    }
+    .text-and-video_video-wrapper-{{ section.id }}.is-playing .video-play-button {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .description{
+        margin-top: 20px;
+    }
+
+    @media screen and (max-width: 768px) {
+        .text-and-video_content-{{ section.id }} {
+            flex-direction: column;
+            text-align: start;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const videoWrapper = document.querySelector('.text-and-video_video-wrapper-{{ section.id }}');
+        const video = videoWrapper.querySelector('.text-and-video_video-element');
+        const playButton = videoWrapper.querySelector('.video-play-button');
+
+        function playVideo() {
+            video.muted = false;
+            video.play();
+        }
+
+        function pauseVideo() {
+            video.pause();
+        }
+
+        playButton.addEventListener('click', playVideo);
+        video.addEventListener('click', function() {
+            if (!video.paused) {
+                pauseVideo();
+            }
+        });
+
+        video.addEventListener('play', function () {
+            videoWrapper.classList.add('is-playing');
+            video.setAttribute('controls', 'true');
+        });
+
+        video.addEventListener('pause', function () {
+            videoWrapper.classList.remove('is-playing');
+        });
+    });
+</script>
+
+{% schema %}
+    {
+        "name": "Text and Video",
+        "settings": [
+        {
+            "type": "text",
+            "id": "subtitle",
+            "label": "Subtitle",
+            "default": "Subtitle"
+        },
+        {
+            "type": "richtext",
+            "id": "title",
+            "label": "Title",
+            "default": "<p>Text and Video</p>"
+        },
+        {
+            "type": "text",
+            "id": "description",
+            "label": "Description",
+            "default": "Description"
+        },
+        {
+            "type": "video",
+            "id": "video",
+            "label": "Video"
+        },
+        {
+            "type": "color",
+            "id": "color_subtitle",
+            "label": "Cor do Subtítulo",
+            "default": "#656E52"
+        },
+        {
+                    "type": "color",
+                    "id": "color_title",
+                    "label": "Cor do Título",
+                    "default": "#121212"
+        },
+        {
+          "type": "color",
+                    "id": "color_description",
+                    "label": "Cor da Descrição",
+                    "default": "#4B4B53"
+        },
+     ],
+     "presets": [
+        {
+            "name": "Texto e Vídeo"
+        }
+     ]
+    }
+{% endschema %}

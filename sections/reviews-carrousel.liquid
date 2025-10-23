@@ -1,0 +1,502 @@
+{% comment %}
+  CHANGELOG:
+  1. Adicionado `if/elsif` no loop de blocos para renderizar <video> ou <img>
+     com base na configuração `block.settings.using_img_video`.
+  2. O `play-button-overlay` agora só é renderizado se o bloco for do tipo vídeo.
+  3. No CSS, o seletor `.videos-carrousel-{{ section.id }} video` foi alterado para
+     `.videos-carrousel-{{ section.id }} video, .videos-carrousel-{{ section.id }} img`
+     para aplicar os mesmos estilos de proporção e borda para ambos os tipos de mídia.
+  4. Corrigido um pequeno erro de digitação no label do schema ('Tamanho do titulo' para 'Tamanho da descrição').
+{% endcomment %}
+
+<div class="spacer-{{ section.id }}-top">&nbsp;</div>
+<div class="main-section-video-{{ section.id }} page-width">
+    <div class="info-and-navgation-{{ section.id }}">
+        {% if section.settings.title_section_videos != blank %}
+            <h1>{{ section.settings.title_section_videos }}</h1>
+        {% endif %}
+        {% if section.settings.description_section != blank %}
+            <p>{{ section.settings.description_section }}</p>
+        {% endif %}
+        <div class="navigation-slide-{{ section.id }}">
+            <div class="prev">{% render 'icon-arrow-prev', color: section.settings.color_nav %} </div>
+            <div class="next">{% render 'icon-arrow-next', color: section.settings.color_nav %} </div>
+        </div>
+    </div>
+    <div class="swiper videos-carrousel-{{ section.id }}" id="videos-swiper-{{ section.id }}">
+        <div class="swiper-wrapper">
+            {% for block in section.blocks %}
+                <div class="swiper-slide">
+                    
+                    {% if block.settings.using_img_video == 'video' and block.settings.video != blank %}
+                        {{ block.settings.video |
+                            video_tag: image_size: '1000x',
+                            muted: true,
+                            controls: false
+                        }}
+                        <div class="play-button-overlay-{{ section.id }}">
+                            <svg class="play-icon" width="32" height="32" fill="white" aria-hidden="true" focusable="false" role="presentation">
+                                <use href="#icon-play-{{ section.id }}" />
+                            </svg>
+                        </div>
+
+                    {% elsif block.settings.using_img_video == 'imagem' and block.settings.imagem != blank %}
+                        {{ block.settings.imagem | image_url: width: 1000 | image_tag: loading: 'lazy', sizes: '(max-width: 749px) 80vw, 230px' }}
+                    
+                    {% endif %}
+
+                    <div class="footer-infos-{{ section.id }}">
+                        {% if block.settings.name_user != blank %}
+                            <p class="footer-name">{{ block.settings.name_user }}</p>
+                        {% endif %}
+                        {% if block.settings.rede_social != blank %}
+                            <p class="footer-handle">@{{ block.settings.rede_social }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="spacer-{{ section.id }}-bottom">&nbsp;</div>
+
+<style>
+    .spacer-{{ section.id }}-top{
+        padding-top: {{ section.settings.padding_space }}px;
+    }
+    .spacer-{{ section.id }}-bottom{
+        padding-bottom: {{ section.settings.padding_space }}px;
+    }
+    @media (max-width: 749px){
+        .spacer-{{ section.id }}-top{
+            padding-top: {{ section.settings.padding_space_mobile }}px;
+        }
+        .spacer-{{ section.id }}-bottom{
+            padding-bottom: {{ section.settings.padding_space_mobile }}px;
+        }
+    }
+    .info-and-navgation-{{ section.id }} {
+        max-width: 50%;
+    }
+    .info-and-navgation-{{ section.id }} h1{
+        color: {{ section.settings.color_text_title }};
+        font-weight: 700;
+        font-size: {{ section.settings.size_title_text }}px;
+    }
+    .info-and-navgation-{{ section.id }} p{
+        color: {{ section.settings.color_text }};
+        font-size: {{ section.settings.size_desc_text }}px;
+    }
+    /* Garante alinhamento do play e vídeo dentro do slide */
+    .videos-carrousel-{{ section.id }} .swiper-slide {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+    .main-section-video-{{ section.id }}{
+        display: flex;
+        gap: 60px;
+        justify-content: space-between;
+    }
+    .info-and-navgation-{{ section.id }} {
+        flex: 0 0 50%;
+    }
+    .videos-carrousel-{{ section.id }} {
+        flex: 1 1 50%;
+        min-width: 0;
+        width: 100%;
+    }
+    /* ALTERAÇÃO AQUI: Aplicando estilos para video E img */
+    .videos-carrousel-{{ section.id }} video,
+    .videos-carrousel-{{ section.id }} img {
+        border: 1px solid {{ section.settings.color_border | default: 'transparent' }};
+        border-radius: 16px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    /* Footer infos responsivo */
+    .footer-infos-{{ section.id }} {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        position: absolute;
+        bottom: 0%;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .footer-infos-{{ section.id }} .footer-name {
+        margin: 0;
+        font-weight: 700;
+        color: {{ section.settings.color_text_title | default: '#111111' }};
+        font-size: clamp(14px, 1.6vw, 20px);
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .footer-infos-{{ section.id }} .footer-handle {
+        margin: 0;
+        color: {{ section.settings.color_text | default: '#6b7280' }};
+        font-size: clamp(12px, 1.2vw, 16px);
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        opacity: 0.9;
+    }
+    /* Navegação custom (Next/Prev) */
+    .navigation-slide-{{ section.id }} {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    .navigation-slide-{{ section.id }} .next,
+    .navigation-slide-{{ section.id }} .prev {
+        width: 36px;
+        height: 36px;
+        border-radius: {{ section.settings.border_radius_nav }}px;
+        background: {{ section.settings.color_background_navs | default: 'rgba(0,0,0,0.05)' }};
+        color: {{ section.settings.color_text | default: '#111111' }};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        user-select: none;
+    }
+    /* Paginação (bullets) */
+    .swiper-pagination-{{ section.id }} .swiper-pagination-bullet {
+        background: {{ section.settings.color_background_navs | default: '#cccccc' }};
+        opacity: 1;
+    }
+    .videos-carrousel-{{ section.id }} .swiper-wrapper {
+        align-items: stretch;
+    }
+    .play-button-overlay-{{ section.id }} {
+        position: absolute;
+        opacity: 0.8;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        width: 64px;
+        height: 64px;
+        background: {{ section.settings.background_play_button | default: 'rgba(0, 0, 0, 0.5)' }};
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .play-button-overlay-{{ section.id }}:hover {
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    /* Classe para esconder o botão de play */
+    .play-button-overlay-{{ section.id }}.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+    @media(max-width: 890px){
+        .main-section-video-{{ section.id }}{
+            display: block;
+        
+        }
+        .info-and-navgation-{{ section.id }} p{
+        color: var(--Gray-300, #7C7C83);
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%; /* 21px */
+        }
+         .info-and-navgation-{{ section.id }} h1{
+            color: var(--Gray-500, #4B4B53);
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 120%; /* 28.8px */
+        }
+        .info-and-navgation-{{ section.id }} { 
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden;" aria-hidden="true" focusable="false">
+    <symbol id="icon-play-{{ section.id }}" viewBox="0 0 24 24">
+        <path d="M8 5v14l11-7z"></path>
+    </symbol>
+</svg>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+    (function() {
+        function wireUpVideoControls(container) {
+            var slides = container.querySelectorAll('.swiper-slide');
+            slides.forEach(function(slide) {
+                var video = slide.querySelector('video');
+                var overlay = slide.querySelector('.play-button-overlay-{{ section.id }}');
+                if (!video || !overlay) return; // Isso já impede a execução em slides de imagem
+
+                // Acessibilidade e comportamento
+                overlay.setAttribute('role', 'button');
+                overlay.setAttribute('aria-label', 'Reproduzir vídeo');
+                overlay.setAttribute('tabindex', '0');
+                try { video.playsInline = true; } catch(e){}
+
+                var showOverlay = function() {
+                    overlay.classList.remove('hidden');
+                    try { video.removeAttribute('controls'); } catch(e){}
+                };
+                var hideOverlay = function() {
+                    overlay.classList.add('hidden');
+                    try { video.setAttribute('controls', ''); } catch(e){}
+                };
+
+                var pauseOthers = function() {
+                    container.querySelectorAll('video').forEach(function(v) {
+                        if (v !== video) {
+                            try { v.pause(); v.removeAttribute('controls'); } catch(e){}
+                        }
+                    });
+                    container.querySelectorAll('.play-button-overlay-{{ section.id }}').forEach(function(btn) {
+                        if (btn !== overlay) btn.classList.remove('hidden');
+                    });
+                };
+
+                overlay.addEventListener('click', function(e) {
+                    e.stopPropagation(); // 👈 impede que o clique no overlay atinja o vídeo
+                    pauseOthers();
+                    try { video.muted = false; } catch(e){}
+                    var p = video.play();
+                    if (p && typeof p.then === 'function') { p.then(hideOverlay).catch(function(){}); }
+                    else { hideOverlay(); }
+                });               
+                overlay.addEventListener('keydown', function(ev){
+                    if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); overlay.click(); }
+                });
+
+                video.addEventListener('play', hideOverlay);
+                video.addEventListener('pause', showOverlay);
+                video.addEventListener('ended', showOverlay);
+                video.addEventListener('click', function(e){
+                    e.stopPropagation(); 
+                    if (!video.paused) {
+                        // Se está tocando, apenas pausa
+                        try { video.pause(); } catch (e) {}
+                        return;
+                    }
+                
+                    // Se está pausado, toca
+                    pauseOthers();
+                    try { video.muted = false; } catch (e) {}
+                    var p = video.play();
+                    if (p && typeof p.then === 'function') { 
+                        p.then(hideOverlay).catch(function(){}); 
+                    } else { 
+                        hideOverlay(); 
+                    }
+                });
+            });
+        }
+
+        function initSwiper() {
+            var container = document.getElementById('videos-swiper-{{ section.id }}');
+            if (!container) return;
+            if (container.dataset.swiperInitialized === 'true') return;
+            if (!window.Swiper) {
+              setTimeout(initSwiper, 100); // Tenta novamente se Swiper não carregou
+              return;
+            }
+            var swiper = new Swiper(container, {
+                slidesPerView: 1.2,
+                spaceBetween: 12,
+                loop: false,
+                pagination: {
+                    el: '.swiper-pagination-{{ section.id }}',
+                    clickable: true,
+                },
+                navigation: false,
+                breakpoints: {
+                    768: { slidesPerView: 2.2, spaceBetween: 16 },
+                    1024: { slidesPerView: 3.2, spaceBetween: 8 }
+                }
+            });
+            container.dataset.swiperInitialized = 'true';
+            container.swiperInstance = swiper;
+            var nextBtn = document.querySelector('.navigation-slide-{{ section.id }} .next');
+            var prevBtn = document.querySelector('.navigation-slide-{{ section.id }} .prev');
+            if (nextBtn) nextBtn.addEventListener('click', function() { swiper.slideNext(); });
+            if (prevBtn) prevBtn.addEventListener('click', function() { swiper.slidePrev(); });
+
+            // Controles do botão de play
+            wireUpVideoControls(container);
+
+            swiper.on('slideChange', function() {
+                var videos = container.querySelectorAll('video');
+                videos.forEach(function(v){ try { v.pause(); v.removeAttribute('controls'); } catch(e){} });
+                container.querySelectorAll('.play-button-overlay-{{ section.id }}').forEach(function(btn){
+                    btn.classList.remove('hidden');
+                });
+            });
+        }
+
+        function ready(cb) {
+            if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', cb); }
+            else { cb(); }
+        }
+
+        ready(initSwiper);
+        document.addEventListener('shopify:section:load', function(ev){
+            if (ev && ev.detail && ev.detail.sectionId === '{{ section.id }}') initSwiper();
+        });
+        document.addEventListener('shopify:section:unload', function(ev){
+            if (ev && ev.detail && ev.detail.sectionId === '{{ section.id }}') {
+                var container = document.getElementById('videos-swiper-{{ section.id }}');
+                if (container && container.swiperInstance) {
+                    try { container.swiperInstance.destroy(true, true); } catch(e){}
+                    container.swiperInstance = null;
+                    container.dataset.swiperInitialized = '';
+                }
+            }
+        });
+    })();
+</script>
+
+
+
+{% schema %}
+    {
+        "name": "Relatos Videos",
+        "settings": [
+             {
+                "type": "number",
+                 "id":"padding_space",
+                 "label": "Padding Space",
+                 "default": 50
+            },
+            {
+                "type": "number",
+                 "id":"padding_space_mobile",
+                 "label": "Padding Space Mobile",
+                 "default": 30
+            },
+           {
+                "type": "text",
+                "id": "title_section_videos",
+                "label": "Titulo"
+           },
+           {
+                "type": "textarea",
+                "id": "description_section",
+                "label": "Descrição"
+           },
+           {
+                "type": "color",
+                "id": "color_border",
+                "label": "Cor da borda",
+                "default": "#E5E7EB"
+           },
+           {
+                "type": "color",
+                "id": "color_nav",
+                "label": "Cor das setas"
+           },
+           {
+                "type": "number",
+                "id": "border_radius_nav",
+                "label": "Arredondamento do botão de navegação",
+                "default": 4
+           },
+           {
+                "type": "color",
+                "id": "background_play_button",
+                "label": "Cor de fundo do play"
+           },
+           {
+                "type": "color",
+                "id": "color_background_navs",
+                "label": "Cor de fundo das navegações"
+           },
+           {
+                "type": "color",
+                "id": "color_text",
+                "label": "Cor do textos"
+           },
+           {
+                "type": "color",
+                "id": "color_text_title",
+                "label": "Cor do titulo"
+           },
+           {
+                "type": "number",
+                "id": "size_title_text",
+                "label": "Tamanho do titulo",
+                "default": 40
+           },
+           {
+                "type": "number",
+                "id": "size_desc_text",
+                "label": "Tamanho da descrição",
+                "default": 20
+           }
+        ],
+        "blocks": [
+            {
+                "type": "video",
+                "name": "Video",
+                "settings": [
+                    {
+                        "type": "select",
+                        "id": "using_img_video",
+                        "label": "Escolha o tipo de mídia",
+                        "options": [
+                            {
+                                "label": "Imagem",
+                                "value": "imagem"
+                            },
+                            {
+                                "label": "Vídeo",
+                                "value": "video"
+                            }
+                        ],
+                        "default":"imagem"
+                    },
+                    {
+                        "type": "video",
+                        "id": "video",
+                        "label": "Vídeo (se selecionado)"
+                    },
+                    {
+                        "type": "image_picker",
+                        "id": "imagem",
+                        "label": "Imagem (se selecionada)"
+                    },
+                    {
+                        "type": "text",
+                        "id": "rede_social",
+                        "label": "@ do perfil"
+                    },
+                    {
+                        "type": "text",
+                        "id": "name_user",
+                        "label": "Nome do usuário"
+                    }
+                ]
+            }
+        ],
+        "presets": [
+            {
+                "name": "Relatos"
+            }
+        ]
+    }
+{% endschema %}

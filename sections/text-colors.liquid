@@ -1,0 +1,54 @@
+<style>
+    .text-colors-title {
+        color: {{ section.settings.color_text }};
+    }
+    .text-colors-title strong {
+        color: {{ section.settings.color_strong-text }};
+        font-weight: 700;
+    }
+    .text-colors-title em {
+        color: {{ section.settings.color_italic-text }};
+        font-style: normal;
+    }
+</style>
+
+<div class="text-colors-container page-width">
+    <div class="text-colors-title title-section">
+        {{ section.settings.title }}
+    </div>
+</div>
+
+
+
+
+{% schema %}
+    {
+        "name": "Text Colors",
+        "settings": [
+           {
+             "type": "richtext",
+             "id": "title",
+             "label": "Title"
+           },
+           {
+             "type": "color_background",
+             "id": "color_strong-text",
+             "label": "Color Strong Text"
+           },
+           {
+             "type": "color_background",
+             "id": "color_text",
+             "label": "Color Text"
+           },
+           {
+             "type": "color_background",
+             "id": "color_italic-text",
+             "label": "Color Italic Text"
+           }
+        ],"presets": [
+            {
+                "name": "Text Colors"
+            }
+        ]
+    }
+{% endschema %}

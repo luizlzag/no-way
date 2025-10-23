@@ -1,0 +1,51 @@
+<div class="main-section-pre-footer">
+    <div class="pre-footer-main-section  page-width">
+        <div class="logo-and-social">
+            <img src="{{ section.settings.imagem_logo | image_url: width:150}}" width="auto" height="auto">
+            {%- render 'social-icons', class: 'footer__list-social' -%}
+        </div>
+    </div>
+</div>
+
+<style>
+    .list-social__link{
+        color:white !important;
+    }
+    .pre-footer-main-section{
+        background: {{ section.settings.color_background }};
+        padding-top: 40px;
+        padding-bottom: 40px;
+        
+        border-bottom: 1px solid #DFDFE0;
+     }
+     .main-section-pre-footer{
+        background: {{ section.settings.color_background }};
+     }
+     .logo-and-social{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+     }
+</style>
+
+{% schema %}
+   {
+    "name": "Pre Footer",
+    "settings": [
+        {
+            "type": "image_picker",
+            "id": "imagem_logo",
+            "label": "Logo"
+        },
+        {
+            "type": "color",
+            "id": "color_background",
+            "label": "Cor de fundo"
+        }
+    ],"presets": [
+        {
+            "name": "Pre Footer"
+        }
+    ]
+   }
+{% endschema %}

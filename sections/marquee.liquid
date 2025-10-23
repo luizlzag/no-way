@@ -1,0 +1,240 @@
+<section class="marquee-section-{{ section.id }}" style="background: {{ section.settings.background_color }};">
+	<div class="marquee-container-{{ section.id }}">
+		{% if section.settings.title or section.settings.subtitle %}
+		<div class="marquee-header-{{ section.id }}">
+			{% if section.settings.title %}
+			<h2 class="marquee-title-{{ section.id }}">{{ section.settings.title }}</h2>
+			{% endif %}
+			{% if section.settings.subtitle %}
+			<p class="marquee-subtitle-{{ section.id }}">{{ section.settings.subtitle }}</p>
+			{% endif %}
+		</div>
+		{% endif %}
+		<div class="marquee-viewport-{{ section.id }}" data-speed="{{ section.settings.speed_marquee }}">
+			<div class="marquee-track-{{ section.id }}">
+				{% for block in section.blocks %}
+					<span class="marquee-item-{{ section.id }}">{{ block.settings.text }}</span>
+					<span class="marquee-separator-{{ section.id }}" aria-hidden="true">{{ section.settings.separator }}</span>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</section>
+
+
+<style>
+    .marquee-section-{{ section.id }}{
+        overflow: hidden;
+    }
+	.marquee-container-{{ section.id }}{
+		display: inline-flex;
+        justify-content: center;
+        align-items: center;
+		gap: 40px;
+
+	}
+	.marquee-header-{{ section.id }}{
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+	.marquee-title-{{ section.id }}{
+		margin: 0;
+		font-size: 24px;
+		font-weight: 700;
+		text-transform: {{ section.settings.text_decoration }};
+	}
+	.marquee-subtitle-{{ section.id }}{
+		margin: 0;
+		font-size: 16px;
+		font-weight: 400;
+	}
+	.marquee-viewport-{{ section.id }}{
+		overflow: hidden;
+		white-space: nowrap;
+		width: 100%;
+	}
+	.marquee-track-{{ section.id }}{
+		display: inline-flex;
+		align-items: center;
+		gap: 32px;
+		will-change: transform;
+	}
+	.marquee-item-{{ section.id }}{
+        margin: 0px;
+        font-size: {{ section.settings.font_size_text }}px;
+        color: {{ section.settings.color_text }};
+		display: inline-block;
+		text-transform: {{ section.settings.text_decoration }};
+	}
+	.marquee-separator-{{ section.id }}{
+        font-size: {{ section.settings.font_size_text }}px;
+        color: {{ section.settings.color_text }};
+		display: inline-block;
+		margin: 0 16px;
+		opacity: .6;
+	}
+	@media (max-width: 749px){
+        .marquee-container-{{ section.id }}{
+            gap: 17.419px;
+            padding: 8.71px 0;
+        }
+        .marquee-item-{{ section.id }}, .marquee-separator-{{ section.id }}{
+            font-size: 13.935px;
+        }
+		.marquee-title-{{ section.id }}{ font-size: 20px; }
+		.marquee-subtitle-{{ section.id }}{ font-size: 14px; }
+	}
+</style>
+
+<script>
+(() => {
+	function debounce(fn, wait){ let t; return function(){ clearTimeout(t); t = setTimeout(fn, wait); }; }
+
+	function initMarquee(root){
+		const viewport = root;
+		const track = viewport.querySelector('.marquee-track-{{ section.id }}');
+		if(!track) return;
+
+		const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		let paused = false;
+		let offset = 0;
+		let frameId = null;
+		let contentWidth = 0; // largura de UMA sequência original
+		const speedAttr = parseFloat(viewport.getAttribute('data-speed'));
+		const speed = Number.isFinite(speedAttr) ? speedAttr : 0.2;
+
+		const original = track.innerHTML; // manter o markup original de uma volta
+
+		function measure(){
+			// volta para o conteúdo original para medir sua largura
+			track.innerHTML = original;
+			track.style.transform = 'translateX(0px)';
+			offset = 0;
+			// largura de uma sequência
+			contentWidth = track.scrollWidth;
+			if(!contentWidth){ return; }
+			// calcular quantas repetições precisamos para cobrir a viewport com sobra
+			const viewportWidth = viewport.clientWidth || viewport.offsetWidth;
+			const repeats = Math.max(2, Math.ceil(viewportWidth / contentWidth) + 2);
+			// construir trilha repetida
+			let buff = '';
+			for(let r = 0; r < repeats; r++){ buff += original; }
+			track.innerHTML = buff;
+		}
+
+		function step(){
+			if(paused){ frameId = requestAnimationFrame(step); return; }
+			offset += speed;
+			if(contentWidth){ offset = offset % contentWidth; }
+			track.style.transform = `translateX(-${offset}px)`;
+			frameId = requestAnimationFrame(step);
+		}
+
+		measure();
+		window.addEventListener('resize', debounce(measure, 150));
+		viewport.addEventListener('mouseenter', () => { paused = true; });
+		viewport.addEventListener('mouseleave', () => { paused = false; });
+
+		if(!prefersReduced){ step(); }
+
+		// Retornar função de cleanup se necessário no editor
+		return () => { if(frameId){ cancelAnimationFrame(frameId); } };
+	}
+
+	function boot(){
+		const root = document.querySelector('.marquee-viewport-{{ section.id }}');
+		if(root){ initMarquee(root); }
+	}
+
+	if(document.readyState === 'loading'){
+		document.addEventListener('DOMContentLoaded', boot);
+	}else{ boot(); }
+
+	document.addEventListener('shopify:section:load', (e) => {
+		if(e && e.detail && e.detail.sectionId === '{{ section.id }}'){
+			const root = document.querySelector('.marquee-viewport-{{ section.id }}');
+			if(root){ initMarquee(root); }
+		}
+	});
+})();
+</script>
+{% schema %}
+    {
+        "name": "Marquee",
+        "settings": [
+            {
+                "type": "text",
+                "id": "title",
+                "label": "Title"
+            },
+            {
+                "type": "text",
+                "id": "subtitle",
+                "label": "Subtitle"
+            },
+            {
+                "type": "color",
+                "id": "color_text",
+                "label": "Color Text",
+                "default": "#000000"
+            },
+            {
+                "type": "color_background",
+                "id": "background_color",
+                "label": "Background Color"
+            },
+            {
+                "type": "text",
+                "id":"speed_marquee",
+                "label": "Speed Marquee",
+                "default": "0.2"
+            },
+            {
+                "type": "number",
+                "id": "font_size_text",
+                "label": "Font Size Text",
+            },
+            {
+                "type": "text",
+                "id":"separator",
+                "label": "Separator",
+                "default": "•"
+            },
+            {
+                "type": "select",
+                 "id": "text_decoration",
+                 "label": "Text Decoration",
+                 "options": [
+                    {
+                        "value": "uppercase",
+                        "label": "Uppercase"
+                    },
+                    {
+                        "value": "lowercase",
+                        "label": "Lowercase"
+                    }
+                ],
+                "default": "uppercase"
+            },
+        ],
+        "blocks": [
+            {
+                "name":"text",
+                "type": "text",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "text",
+                        "label": "Text"
+                    }
+                ]
+                    
+            }
+        ],"presets": [
+            {
+                "name": "Marquee"
+            }
+        ]
+    }
+{% endschema %}

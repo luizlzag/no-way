@@ -1,0 +1,524 @@
+{%- liquid
+  if settings.usar_padrao
+    assign plank_len_value = settings.plank_lean 
+    assign planks_per_box_value = settings.planks_per_box 
+  else
+    assign plank_len_value = product.metafields.custom.comp_regua 
+    assign planks_per_box_value = product.metafields.custom.regua_por_cx
+  endif
+-%}
+
+<div class="main-container-calc-deck" data-plank-len="{{ plank_len_value }}" data-planks-per-box="{{ planks_per_box_value }}" data-product-price="{{ product.price }}">
+   <div class="main-container-calc-inputs">
+     <div class="container-input-text">
+        <p>Comprimento (m):</p>
+        <input type="number" class="input-deck-calc" alt="comprimento" id="comprimento">
+     </div>
+     <div class="container-input-text">
+        <p>Largura (m):</p>
+        <input type="number" class="input-deck-calc" alt="largura" id="largura">
+     </div>
+     <div class="container-calc-button-clear">
+        <button type="button" id="clear-calc-button" class="button-clear-calc">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0722 3.9967L20.7508 9.83395L17.0544 13.5304L13.0758 17.5H21.0041V19H7.93503L4.00195 15.0669L15.0722 3.9967ZM10.952 17.5L15.4628 12.9994L11.8268 9.3634L6.12327 15.0669L8.55635 17.5H10.952Z" fill="#000000"></path> </g></svg>
+        </button>
+     </div>
+   </div>
+   <div class="sugest-inteligent-calc-card">
+    <div class="sugest-inteligent-calc-card-header">   
+        <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="25" height="25" rx="12.5" fill="#656E52" fill-opacity="0.1"/>
+            <circle cx="12.4993" cy="12.5" r="8.33333" fill="#656E52"/>
+        </svg>    
+        <h2>Sugestão de Montagem Inteligente</h2>
+    </div>
+    <div class="sugest-inteligent-calc-card-text">
+        <p>Para aproveitar melhor as réguas de 0 m, sugerimos que você monte o deck com as réguas na posição (orientação), acompanhando os 0m da (largura/comprimento).</p>
+    </div>
+   </div>
+   <div class="main-container-calc-deck-resum">
+        <div class="resum-calc-deck resum-calc-deck-line-1">
+            <div class="resum-calc-deck-somb-hori resum-calc-text-deck" id="sobra-horizontal-container">
+                <p>Sobra Horizontal:</p>
+            </div>
+            <div class="resum-calc-deck-area-deck resum-calc-text-deck" id="area-deck-container">
+                <p>Área do Deck:</p>
+            </div>
+        </div>
+        <div class="resum-calc-deck resum-calc-deck-line-2">
+            <div class="resum-calc-deck-somb-vert resum-calc-text-deck" id="sobra-vertical-container">
+                <p>Sobra Vertical:</p>
+            </div>
+            <div class="resum-calc-deck-qtd-caixas resum-calc-text-deck" id="qtd-caixas-container">
+                <p>Quantidade de Réguas:</p>
+            </div>
+        </div>
+   </div>
+   <div class="footer-container-calc-deck">
+     <div class="value-total-deck-calc">
+       <h2>Valor Total:</h2>
+       <p id="total-value-calc" class="total-value-calc-style"></p>
+     </div>
+     <div class="help-footer-calc-deck">
+        <p>Tem certeza das medidas? </p>
+        <div class="contact-hel-calc-desk">
+            <a  href="https://wa.me/{{ settings.number_contato }}?text={{ 'Olá, estou com duvidas para a montagem do produto ' | append: product.title | url_encode }}"
+                target="_blank">Revise ou fale com um especialista no WhatsApp.</a>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M15.3015 2.61725C13.6208 0.928011 11.3799 0 8.99357 0C4.07982 0 0.0769778 4.00285 0.0727012 8.91661C0.0727012 10.4904 0.483249 12.0214 1.26158 13.377L0 18L4.72986 16.7598C6.0342 17.4697 7.50105 17.846 8.99357 17.846H8.99784C13.9116 17.846 17.9144 13.8432 17.9187 8.92516C17.9144 6.54312 16.9864 4.30221 15.3015 2.61725ZM8.99357 16.3364C7.65929 16.3364 6.35494 15.9772 5.21738 15.3015L4.94796 15.139L2.14255 15.8746L2.89094 13.1376L2.7156 12.8553C1.97149 11.675 1.58232 10.3108 1.58232 8.91233C1.58232 4.8325 4.90947 1.50535 8.99784 1.50535C10.9779 1.50535 12.8382 2.2794 14.2409 3.67783C15.6393 5.08054 16.4091 6.94084 16.4091 8.92088C16.4048 13.0135 13.0777 16.3364 8.99357 16.3364ZM13.0606 10.7855C12.8382 10.6743 11.7434 10.1354 11.5381 10.0584C11.3328 9.98575 11.1832 9.94726 11.0378 10.1696C10.8881 10.392 10.4604 10.8967 10.3321 11.0421C10.2038 11.1917 10.0713 11.2088 9.84888 11.0976C9.6265 10.9865 8.90804 10.7512 8.057 9.99002C7.39414 9.39986 6.94938 8.66857 6.81681 8.44619C6.68851 8.22381 6.80398 8.10406 6.91517 7.99287C7.01353 7.89451 7.13755 7.732 7.24874 7.60371C7.35993 7.47541 7.39842 7.38133 7.47112 7.23165C7.54382 7.08197 7.50961 6.95367 7.45401 6.84248C7.39842 6.73129 6.95366 5.63222 6.76549 5.18746C6.58587 4.75125 6.40198 4.81112 6.26513 4.80684C6.13684 4.79829 5.98716 4.79829 5.83748 4.79829C5.6878 4.79829 5.44831 4.85388 5.24304 5.07627C5.03777 5.29865 4.46471 5.83749 4.46471 6.93656C4.46471 8.03564 5.26442 9.09195 5.37561 9.24163C5.4868 9.39131 6.9451 11.6408 9.18174 12.6073C9.71203 12.8382 10.1269 12.9751 10.4519 13.0777C10.9864 13.2488 11.4697 13.2231 11.8546 13.1675C12.2822 13.1033 13.1717 12.6287 13.3599 12.1069C13.5438 11.5852 13.5438 11.1404 13.4882 11.0463C13.4326 10.9522 13.2829 10.8967 13.0606 10.7855Z" fill="#656E52"/>
+            </svg>
+        </div>
+     </div>
+   </div>
+</div>
+<script>
+    (function () {
+      const container = document.querySelector('.main-container-calc-deck');
+      const PLANK_LEN = parseFloat(container.dataset.plankLen) || 3;
+      const PRODUCT_PRICE = parseFloat(container.dataset.productPrice) || 0;
+      const PLANKS_PER_BOX = parseInt(container.dataset.planksPerBox, 10) || 4;
+    
+      // --- helpers ---
+      function round(n, decimals = 3) {
+        const p = Math.pow(10, decimals);
+        return Math.round((n + 1e-12) * p) / p;
+      }
+      function toFixedTrim(n, decimals = 3) {
+        return round(n, decimals).toFixed(decimals).replace(/\.?0+$/, '');
+      }
+
+      // elementos
+      const inputCompr = document.getElementById('comprimento');
+      const inputLarg = document.getElementById('largura');
+      const clearButton = document.getElementById('clear-calc-button');
+    
+      const sugestTextP = document.querySelector('.sugest-inteligent-calc-card-text > p');
+      const footerContainer = document.querySelector('.footer-container-calc-deck');
+      const resumContainer = document.querySelector('.main-container-calc-deck-resum');
+      const sugestCard = document.querySelector('.sugest-inteligent-calc-card');
+    
+      const areaContainer = document.getElementById('area-deck-container');
+      const sobraHoriContainer = document.getElementById('sobra-horizontal-container');
+      const sobraVertContainer = document.getElementById('sobra-vertical-container');
+      const qtdCaixasContainer = document.getElementById('qtd-caixas-container');
+      const totalValueContainer = document.getElementById('total-value-calc');
+    
+      function safeParse(v) {
+        const n = parseFloat(v);
+        return Number.isFinite(n) && n >= 0 ? n : null;
+      }
+    
+      function computeAndRender() {
+        const compr = safeParse(inputCompr.value);
+        const larg = safeParse(inputLarg.value);
+
+        if (inputCompr.value.length > 0 || inputLarg.value.length > 0) {
+          clearButton.classList.add('visible');
+        } else {
+          clearButton.classList.remove('visible');
+        }
+    
+        // Função para limpar e adicionar resultados
+        function updateResult(container, value) {
+          const oldResult = container.querySelector('.calc-result');
+          if (oldResult) oldResult.remove();
+          const newResult = document.createElement('p');
+          newResult.className = 'calc-result';
+          newResult.innerHTML = value;
+          container.appendChild(newResult);
+        }
+    
+        // limpar se dados inválidos
+        if (compr === null || larg === null || compr === 0 || larg === 0) {
+          container.classList.remove('calculating');
+          resumContainer.classList.remove('visible');
+          footerContainer.classList.remove('visible');
+          sugestCard.classList.remove('visible');
+          sugestTextP.innerHTML = 'Preencha comprimento e largura em metros para ver a sugestão inteligente.';
+          ['sobra-horizontal-container', 'area-deck-container', 'sobra-vertical-container', 'qtd-caixas-container'].forEach(id => {
+              updateResult(document.getElementById(id), '—');
+          });
+          totalValueContainer.textContent = '';
+          return;
+        }
+    
+        container.classList.add('calculating');
+        resumContainer.classList.add('visible');
+        footerContainer.classList.add('visible');
+        sugestCard.classList.add('visible');
+    
+        const remLarg = round(larg % PLANK_LEN, 6);
+        const remCompr = round(compr % PLANK_LEN, 6);
+    
+        const segsLarg = round(larg / PLANK_LEN, 6);
+        const segsCompr = round(compr / PLANK_LEN, 6);
+    
+        let orientation;
+        if (remLarg === 0 && remCompr === 0) {
+          orientation = 'horizontal';
+        } else if (remLarg === 0) {
+          orientation = 'horizontal';
+        } else if (remCompr === 0) {
+          orientation = 'vertical';
+        } else {
+          orientation = (remLarg <= remCompr) ? 'horizontal' : 'vertical';
+        }
+    
+        const acompanhe = orientation === 'horizontal' ? 'largura' : 'comprimento';
+        const acompanheValue = orientation === 'horizontal' ? larg : compr;
+        const orientLabel = orientation === 'horizontal' ? 'HORIZONTAL' : 'VERTICAL';
+    
+        sugestTextP.innerHTML =
+          `Para aproveitar melhor as réguas de <strong>${PLANK_LEN}m</strong>, sugerimos que você monte o deck com as réguas na posição <span class="orient-result-deck">${orientLabel}</span>, acompanhando os <strong>${toFixedTrim(acompanheValue, 3)} m</strong> da ${acompanhe}.`;
+    
+        const area = round(compr * larg, 4);
+        updateResult(areaContainer, `${toFixedTrim(area, 4)} m²`);
+    
+        updateResult(sobraHoriContainer, `${toFixedTrim(remLarg, 3)} m`);
+        updateResult(sobraVertContainer, `${toFixedTrim(remCompr, 3)} m`);
+    
+        // ✅ Cálculo de réguas e caixas
+        const estSegs = Math.ceil(larg / PLANK_LEN) * Math.ceil(compr / PLANK_LEN);
+        const estCaixas = Math.ceil(estSegs / PLANKS_PER_BOX);
+    
+        updateResult(qtdCaixasContainer, `${estCaixas} caixa${estCaixas > 1 ? 's' : ''}`);
+
+        const totalValue = estCaixas * (PRODUCT_PRICE / 100);
+        const formattedTotal = new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        }).format(totalValue);
+        totalValueContainer.textContent = formattedTotal;
+    
+        const card = document.querySelector('.sugest-inteligent-calc-card');
+        if (card) {
+          card.classList.remove('suggest-hori', 'suggest-vert');
+          card.classList.add(orientation === 'horizontal' ? 'suggest-hori' : 'suggest-vert');
+        }
+      }
+    
+      clearButton.addEventListener('click', () => {
+        inputCompr.value = '';
+        inputLarg.value = '';
+        computeAndRender();
+        inputCompr.focus();
+      });
+
+      inputCompr.addEventListener('input', computeAndRender);
+      inputLarg.addEventListener('input', computeAndRender);
+    
+      computeAndRender();
+    })();
+</script>
+    
+    
+
+<style>
+    .resum-calc-text-deck {
+        display: flex;
+        align-items: flex-start;
+        flex: 1 0 0;
+        justify-content: space-between;
+    }
+    .orient-result-deck{
+        color: #656E52;
+        leading-trim: both;
+        text-edge: cap;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+    }
+    .sugest-inteligent-calc-card {
+        transition: all 0.6s ease;
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-top: 0 !important;
+        border-width: 0;
+        overflow: hidden;
+    }
+    .sugest-inteligent-calc-card.visible {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 500px; /* Altura suficiente para o conteúdo */
+        padding-top: 16px;
+        padding-bottom: 16px;
+        border-width: 1px;
+        margin-top: 24px !important;
+    }
+    .footer-container-calc-deck {
+        transition: all 0.6s ease;
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+        overflow: hidden;
+        margin-top: 0 !important; /* Evita que a margem padrão do gap afete a animação */
+        padding-top: 0 !important;
+    }
+    .footer-container-calc-deck.visible {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 500px;
+        margin-top: 24px !important; /* Restaura o gap original */
+    }
+    .main-container-calc-deck-resum {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        align-self: stretch;
+    }
+    .main-container-calc-deck-resum {
+        transition: all 0.6s ease;
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+        overflow: hidden;
+        margin-top: 0 !important;
+    }
+    .main-container-calc-deck-resum.visible {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 500px;
+        margin-top: 24px !important;
+    }
+    .value-total-deck-calc {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        align-items: center; /* Alinha verticalmente o título e o valor */
+    }
+    .total-value-calc-style {
+        color: var(--VERDE, #656E52);
+        leading-trim: both;
+        text-edge: cap;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        margin: 0;
+    }
+    .resum-calc-text-deck .calc-result {
+        color: var(--PRETO, #000);
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 150%;
+        margin: 0;
+    }
+    .contact-hel-calc-desk{
+        display: flex;
+        gap: 8px;
+    }
+    .help-footer-calc-deck p {
+        color: var(--PRETO, #000);
+        leading-trim: both;
+        text-edge: cap;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 140%; /* 19.6px */
+    }
+    .contact-hel-calc-desk a{
+        color: var(--VERDE, #656E52);
+        leading-trim: both;
+        text-edge: cap;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 140%; /* 19.6px */
+        text-decoration-line: underline;
+        text-decoration-style: solid;
+        text-decoration-skip-ink: auto;
+        text-decoration-thickness: auto;
+        text-underline-offset: auto;
+        text-underline-position: from-font;
+    }
+    .footer-container-calc-deck h2{
+        color: var(--Gray-400, #68686E);
+        leading-trim: both;
+        text-edge: cap;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+    }
+    .sugest-inteligent-calc-card-header h2{
+        color: #656E52;
+        leading-trim: both;
+        text-edge: cap;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+    }
+    .footer-container-calc-deck{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    .help-footer-calc-deck{
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .resum-calc-deck p{
+        color: var(--Gray-300, #7C7C83);
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%; /* 24px */
+    }
+    .resum-calc-deck {
+        display: flex;
+        align-items: flex-start;
+        gap: 24px;
+        align-self: stretch;
+    }
+    .resum-calc-deck > .resum-calc-text-deck:first-child {
+        position: relative;
+    }
+    .resum-calc-deck > .resum-calc-text-deck:first-child::after {
+        content: '';
+        position: absolute;
+        right: -12px; /* Metade do gap */
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        padding: 1px;
+        background-color: rgba(101, 110, 82, 0.20);
+        height: 100%;
+    }
+
+    @media screen and (max-width: 749px) {
+        .main-container-calc-inputs {
+            flex-direction: column;
+        }
+    }
+
+    @media screen and (max-width: 749px) { 
+        
+        .main-container-calc-deck-resum {
+            gap: 16px; /* Espaço entre os itens empilhados */
+        }
+        .resum-calc-deck {
+            flex-direction: column; /* Empilha os itens dentro de cada linha */
+            gap: 16px;
+        }
+        .resum-calc-deck > .resum-calc-text-deck:first-child::after {
+            display: none; /* Esconde a linha vertical */
+        }
+        .resum-calc-deck-line-1 {
+            position: relative;
+            padding-bottom: 16px; /* Espaço para a linha horizontal */
+        }
+        .resum-calc-deck-line-1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(101, 110, 82, 0.20);
+        }
+    }
+
+    .sugest-inteligent-calc-card-text p {
+        color: var(--Gray-500, #4B4B53);
+        leading-trim: both;
+        text-edge: cap;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+    }
+    .sugest-inteligent-calc-card-header{
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .sugest-inteligent-calc-card{
+        display: flex;
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        align-self: stretch;
+        border-radius: 8px;
+        border: 1px solid rgba(101, 110, 82, 0.15);
+        background: rgba(101, 110, 82, 0.25);
+    }
+    .container-input-text {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+    }
+    .container-input-text p {
+        color: var(--Gray-500, #4B4B53);
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+    }
+    .container-calc-button-clear {
+        display: flex;
+        align-items: flex-end;
+        padding-bottom: 7px;
+    }
+    .button-clear-calc svg {
+        width: 24px;
+        height: 24px;
+    }
+    .button-clear-calc {
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.8);
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+        transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    }
+    .button-clear-calc.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
+    }
+    .input-deck-calc{
+        display: flex;
+        padding: 6px 16px;
+        align-items: center;
+        gap: 10px;
+        flex: 1 0 0;
+        border-radius: 8px;
+        border: 1px solid var(--BEGE, #EAE1D8);
+        opacity: 0.8;
+        background: #FBF8F4;
+        min-height: 35px;
+    }
+    .main-container-calc-inputs{
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        align-self: stretch;
+    }
+    .main-container-calc-deck{
+        display: flex;
+        padding: 16px 24px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        border-radius: 8px;
+        background: var(--BEGE, #EAE1D8);
+        transition: gap 0.6s ease;
+    }
+    .main-container-calc-deck.calculating {
+        gap: 24px;
+    }
+</style>

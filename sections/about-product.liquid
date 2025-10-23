@@ -1,0 +1,156 @@
+<div
+  style="
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="about-product-container-{{ section.id }} page-width">
+    <div class="infos-product-{{ section.id }} strong-color">
+        <p class="subtitle-section text-transform-uppercase">SOBRE O {{ product.title }}</p>
+        <h2 class="title-section">Transforme seu espaço com <strong>design, praticidade e durabilidade.</strong></h2>
+        <p class="description"> {{ product.description }}</p>
+    </div>
+    <div class="about-product-content-{{ section.id }}">
+        <table class="about-product-content-item-{{ section.id }}">
+            <tbody>
+                {%- if product.metafields.custom.material.value != blank -%}
+                    <tr>
+                        <td class="property-name">Material</td>
+                        <td class="property-value">{{ product.metafields.custom.material }}</td>
+                    </tr>
+                {%- endif -%}
+                {%- if product.metafields.custom.peso_unitario.value != blank -%}
+                    <tr>
+                        <td class="property-name">Peso unitário</td>
+                        <td class="property-value">{{ product.metafields.custom.peso_unitario }}</td>
+                    </tr>
+                {%- endif -%}
+                {%- if product.metafields.custom.dimensoes_disponiveis.value != blank -%}
+                    <tr>
+                        <td class="property-name">Dimensões Disponíveis</td>
+                        <td class="property-value">{{ product.metafields.custom.dimensoes_disponiveis }}</td>
+                    </tr>
+                {%- endif -%}
+                {%- if product.metafields.custom.garantia.value != blank -%}
+                    <tr>
+                        <td class="property-name">Garantia</td>
+                        <td class="property-value">{{ product.metafields.custom.garantia }}</td>
+                    </tr>
+                {%- endif -%}
+                {%- if product.metafields.custom.manutencao.value != blank -%}
+                    <tr>
+                        <td class="property-name">Manutenção</td>
+                        <td class="property-value">{{ product.metafields.custom.manutencao }}</td>
+                    </tr>
+                {%- endif -%}
+                {%- if product.metafields.custom.instalacao.value != blank -%}
+                    <tr>
+                        <td class="property-name">Instalação</td>
+                        <td class="property-value">{{ product.metafields.custom.instalacao }}</td>
+                    </tr>
+                {%- endif -%}
+                {%- if product.metafields.custom.resistencia.value != blank -%}
+                    <tr>
+                        <td class="property-name">Resistência</td>
+                        <td class="property-value">{{ product.metafields.custom.resistencia }}</td>
+                    </tr>
+                {%- endif -%}
+            </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+<style>
+    .text-transform-uppercase {
+        text-transform: uppercase;
+        color: rgba(0, 0, 0, 0.30);
+    }
+    .about-product-container-{{ section.id }} {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 16px;
+        background: var(--BEGE, #EAE1D8);
+        padding: 80px 92px;
+        gap: 60px; /* Espaçamento entre a descrição e a tabela */
+    }
+
+    .infos-product-{{ section.id }} {
+        flex: 1;
+    }
+
+    .about-product-content-{{ section.id }} {
+        flex: 1;
+    }
+
+    .about-product-content-item-{{ section.id }} {
+        width: 100%;
+        border-collapse: collapse; /* Remove espaços entre as bordas */
+    }
+
+    .about-product-content-item-{{ section.id }} tr {
+        border-bottom: 1px solid rgba(101, 110, 82, 0.20);
+    }
+
+    .about-product-content-item-{{ section.id }} tr:last-child {
+        border-bottom: none; /* Remove a linha da última propriedade */
+    }
+
+    .about-product-content-item-{{ section.id }} .property-name {
+        color: #656E52;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 140%; /* 25.2px */
+        padding: 16px 0;
+    }
+
+    .about-product-content-item-{{ section.id }} .property-value {
+        color: var(--Gray-300, #7C7C83);
+        text-align: right;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 150%; /* 24px */
+        padding: 16px 0;
+    }
+
+    @media screen and (max-width: 749px) {
+        .about-product-container-{{ section.id }} {
+            flex-direction: column;
+            padding: 32px 16px;
+        }
+    }
+</style>
+
+{% schema %}
+    {
+        "name": "About Product",
+        "settings": [        
+            {
+                "type": "range",
+                "id": "padding_top",
+                "min": 0,
+                "max": 100,
+                "step": 4,
+                "unit": "px",
+                "label": "Padding Top",
+                "default": 80
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom",
+                "min": 0,
+                "max": 100,
+                "step": 4,
+                "unit": "px",
+                "label": "Padding Bottom",
+                "default": 80
+            }
+        ],
+        "presets": [
+            {
+                "name": "About Product"
+            }
+        ]
+    }
+{% endschema %}

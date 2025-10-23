@@ -1,0 +1,386 @@
+<link rel="stylesheet" href="https://unpkg.com/img-comparison-slider@8.0.6/dist/styles.css" />
+<script src="https://unpkg.com/img-comparison-slider@8.0.6/dist/index.js" defer></script>
+
+{%- comment -%}
+  O código foi reestruturado para um layout de duas colunas:
+  - Esquerda: O slider de comparação de imagens.
+  - Direita: Título e descrição.
+  - A lógica de múltiplos "blocos" foi removida, agora a seção controla um único slider.
+{%- endcomment -%}
+
+{%- style -%}
+  .before-after-section-{{ section.id }} {
+    --title-color: {{ section.settings.color_title | default: '#111' }};
+    --title-size: {{ section.settings.size_title }}px;
+    --title-weight: {{ section.settings.peso_fonte | default: 600 }};
+    --handle-color: {{ section.settings.color_handle | default: '#6b21a8' }};
+    --container-border-radius: {{ section.settings.border_radius | default: 16 }}px;
+    
+    /* Altura será aplicada ao slider da seção */
+    --container-height-desktop: {{ section.settings.height_custom }}px;
+    --container-height-mobile: {{ section.settings.height_custom_mobile }}px;
+
+    padding: 40px 0;
+  }
+
+  .before-after__main-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: var(--title-size);
+    font-weight: var(--title-weight);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  /* Novo container principal com layout de 2 colunas */
+  .before-after__container-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Duas colunas de tamanho igual */
+    gap: 3rem; /* Espaçamento entre o slider e o texto */
+    align-items: center; /* Alinha verticalmente os itens */
+  }
+  
+  .before-after__content {
+    /* Estilos para o container de texto da direita */
+  }
+
+  .before-after__content-title {
+    font-size: 32px;
+    font-weight: var(--title-weight);
+    color: var(--title-color);
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .before-after__content-description p {
+    font-size: 20px;
+    line-height: 1.6;
+    margin-top: 0;
+  }
+
+  /* Estilos aplicados ao slider */
+  .before-after__slider {
+    display: block;
+    margin: 0 auto;
+    border-radius: var(--container-border-radius);
+    overflow: hidden;
+    width: 100%;
+    height: var(--container-height-desktop);
+    contain: strict;
+    
+    --divider-width: 2px;
+    --divider-color: var(--handle-color);
+    --handle-size: 40px;
+    --handle-background-color: var(--handle-color);
+    --handle-border-color: var(--handle-color);
+    --handle-border-width: 0px;
+  }
+
+  /* Força as imagens dentro dos slots a respeitarem a altura do container */
+  .before-after__slider img,
+  .before-after__slider ::part(first),
+  .before-after__slider ::part(second),
+  .before-after__slider picture,
+  .before-after__slider picture img {
+    width: 100% !important;
+    height: var(--container-height-desktop) !important;
+    object-fit: cover;
+    display: block;
+  }
+
+  .before-after__slider div[slot="first"],
+  .before-after__slider div[slot="second"] {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-content: center;
+  }
+
+  /* Remove as setas padrão */
+  .before-after__slider::part(handle-left-arrow),
+  .before-after__slider::part(handle-right-arrow) {
+    display: none;
+  }
+
+  /* Ajustes de responsividade */
+  @media screen and (max-width: 768px) {
+    .before-after__content-description p{
+      text-align: start;
+    }
+     .before-after__content-description span{
+      color: var(--Gray-300, #7C7C83);
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 120%; /* 16.8px */
+      text-align: start;
+     }
+    .before-after__content-title{
+      color: var(--Gray-600, #313135);
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 120%; /* 28.8px */
+      text-align: start;
+    }
+    .before-after__container-{{ section.id }} {
+      grid-template-columns: 1fr; /* Uma coluna no mobile */
+      gap: 2rem;
+    }
+
+    .before-after__main-title-{{ section.id }} {
+      font-size: calc(var(--title-size) * 0.75);
+    }
+    
+    .before-after__slider {
+      height: var(--container-height-mobile);
+    }
+
+    /* Ajusta a altura das imagens no mobile */
+    .before-after__slider img,
+    .before-after__slider ::part(first),
+    .before-after__slider ::part(second),
+    .before-after__slider picture,
+    .before-after__slider picture img {
+      height: var(--container-height-mobile) !important;
+    }
+
+    .before-after__content {
+      text-align: center;
+    }
+  }
+{%- endstyle -%}
+
+<section class="before-after-section-{{ section.id }}">
+  <div class="page-width">
+    {%- if section.settings.title_section != blank -%}
+      <h2 class="before-after__main-title-{{ section.id }}">
+        {{ section.settings.title_section }}
+      </h2>
+    {%- endif -%}
+
+    <div class="before-after__container-{{ section.id }}">
+      
+      {%- comment -%} Coluna da Esquerda: Slider {%- endcomment -%}
+      <div class="before-after__slider-wrapper">
+        <img-comparison-slider
+          class="before-after__slider"
+          {% if section.settings.slider_orientation == 'vertical' %} direction="vertical" {% endif %}
+        >
+          <style>
+            .before-after-section-{{ section.id }} .before-after__slider::part(handle) {
+              {% if section.settings.slider_orientation == 'vertical' %}
+                background-image: url("data:image/svg+xml,%3Csvg width='19' height='12' viewBox='0 0 19 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' y='0.5' width='18' height='2' rx='1' fill='white'/%3E%3Crect x='0.5' y='5' width='18' height='2' rx='1' fill='white'/%3E%3Crect x='0.5' y='9.5' width='18' height='2' rx='1' fill='white'/%3E%3C/svg%3E%0A");
+                background-size: 19px;
+              {% else %}
+                background-image: url("data:image/svg+xml,%3Csvg width='12' height='19' viewBox='0 0 12 19' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' y='0.5' width='2' height='18' rx='1' fill='white'/%3E%3Crect x='5' y='0.5' width='2' height='18' rx='1' fill='white'/%3E%3Crect x='9.5' y='0.5' width='2' height='18' rx='1' fill='white'/%3E%3C/svg%3E");
+                background-size: 10px;
+              {% endif %}
+              background-repeat: no-repeat;
+              background-position: center;
+            }
+          </style>
+
+          {%- comment -%} SLOT: primeiro (antes) {%- endcomment -%}
+          {%- if section.settings.img_before != blank -%}
+            {%- if section.settings.img_before_mobile != blank -%}
+              <picture slot="first">
+                <source media="(max-width: 768px)" srcset="{{ section.settings.img_before_mobile | image_url: width: 1200 }}">
+                <img
+                  src="{{ section.settings.img_before | image_url: width: 1800 }}"
+                  alt="{{ section.settings.img_before.alt | default: 'Imagem Antes' | escape }}"
+                  loading="lazy"
+                  width="{{ section.settings.img_before.width }}"
+                  height="{{ section.settings.img_before.height }}"
+                >
+              </picture>
+            {%- else -%}
+              <img
+                slot="first"
+                src="{{ section.settings.img_before | image_url: width: 1800 }}"
+                alt="{{ section.settings.img_before.alt | default: 'Imagem Antes' | escape }}"
+                loading="lazy"
+                width="{{ section.settings.img_before.width }}"
+                height="{{ section.settings.img_before.height }}"
+              >
+            {%- endif -%}
+          {%- else -%}
+            <div slot="first" style="background: #f0f0f0; width:100%; height:100%; display:grid; place-content:center;">Imagem Antes</div>
+          {%- endif -%}
+
+          {%- comment -%} SLOT: segundo (depois) {%- endcomment -%}
+          {%- if section.settings.img_after != blank -%}
+            {%- if section.settings.img_after_mobile != blank -%}
+              <picture slot="second">
+                <source media="(max-width: 768px)" srcset="{{ section.settings.img_after_mobile | image_url: width: 800 }}">
+                <img
+                  src="{{ section.settings.img_after | image_url: width: 1800 }}"
+                  alt="{{ section.settings.img_after.alt | default: 'Imagem Depois' | escape }}"
+                  loading="lazy"
+                  width="{{ section.settings.img_after.width }}"
+                  height="{{ section.settings.img_after.height }}"
+                >
+              </picture>
+            {%- else -%}
+              <img
+                slot="second"
+                src="{{ section.settings.img_after | image_url: width: 1800 }}"
+                alt="{{ section.settings.img_after.alt | default: 'Imagem Depois' | escape }}"
+                loading="lazy"
+                width="{{ section.settings.img_after.width }}"
+                height="{{ section.settings.img_after.height }}"
+              >
+            {%- endif -%}
+          {%- else -%}
+            <div slot="second" style="background: #e0e0e0; width:100%; height:100%; display:grid; place-content:center;">Imagem Depois</div>
+          {%- endif -%}
+        </img-comparison-slider>
+      </div>
+
+      {%- comment -%} Coluna da Direita: Conteúdo {%- endcomment -%}
+      <div class="before-after__content">
+        {%- if section.settings.content_title != blank -%}
+          <h3 class="before-after__content-title">{{ section.settings.content_title }}</h3>
+        {%- endif -%}
+        {%- if section.settings.content_description != blank -%}
+          <div class="before-after__content-description">{{ section.settings.content_description }}</div>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Antes e Depois",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Conteúdo Geral da Seção"
+    },
+    {
+      "type": "text",
+      "id": "title_section",
+      "label": "Título principal da seção",
+      "default": "Confira o Antes e Depois"
+    },
+    {
+      "type": "color",
+      "id": "color_title",
+      "label": "Cor do título principal",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "size_title",
+      "label": "Tamanho da fonte do título",
+      "min": 16,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "peso_fonte",
+      "label": "Peso da fonte do título",
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "header",
+      "content": "Conteúdo (Coluna Direita)"
+    },
+    {
+      "type": "text",
+      "id": "content_title",
+      "label": "Título",
+      "default": "Transformação Incrível"
+    },
+    {
+      "type": "richtext",
+      "id": "content_description",
+      "label": "Descrição",
+      "default": "<p>Use este espaço para descrever os benefícios e os resultados mostrados na comparação de imagens ao lado. Destaque os pontos mais importantes.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Configurações do Slider (Coluna Esquerda)"
+    },
+    {
+      "type": "image_picker",
+      "id": "img_before",
+      "label": "Imagem 'Antes'"
+    },
+    {
+      "type": "image_picker",
+      "id": "img_before_mobile",
+      "label": "Imagem 'Antes' (Mobile) - opcional"
+    },
+    {
+      "type": "image_picker",
+      "id": "img_after",
+      "label": "Imagem 'Depois'"
+    },
+    {
+      "type": "image_picker",
+      "id": "img_after_mobile",
+      "label": "Imagem 'Depois' (Mobile) - opcional"
+    },
+    {
+      "type": "select",
+      "id": "slider_orientation",
+      "label": "Orientação do slider",
+      "options": [
+        { "value": "horizontal", "label": "Horizontal" },
+        { "value": "vertical", "label": "Vertical" }
+      ],
+      "default": "horizontal"
+    },
+    {
+      "type": "range",
+      "id": "height_custom",
+      "label": "Altura do container (Desktop)",
+      "min": 200,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "height_custom_mobile",
+      "label": "Altura do container (Mobile)",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 350
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Arredondamento da borda (px)",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "color_handle",
+      "label": "Cor do divisor e controle",
+      "default": "#6b21a8"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Antes e Depois"
+    }
+  ]
+}
+{% endschema %}

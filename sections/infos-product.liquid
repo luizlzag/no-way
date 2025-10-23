@@ -1,0 +1,278 @@
+<style>
+    .infos-product{
+        display: flex;
+        gap: 24px;
+        align-items: center;
+    }
+    .infos-product__tabs{
+        display: grid;
+        gap: 16px;
+    }
+
+    .infos-product__tab {
+      width: 270px;
+      height: 48px;
+      flex: 1;
+      padding: 16px 40px;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 700;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: none;
+      position: relative;
+    }  
+    .infos-product__tab.active {
+      background-color: {{ section.settings.color_background_tab_select }};
+      color: {{ section.settings.color_text_tab_select }};
+      position: relative;
+    }
+    
+    .infos-product__tab.active::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-left: 8px solid {{ section.settings.color_background_tab_select }};
+    }
+  
+    .infos-product__tab:not(.active) {
+      background-color: {{ section.settings.color_background_tab_unselect }};
+      color: {{ section.settings.color_text_tab_unselect }};
+    }
+  
+    .infos-product__content {
+      min-height: 260px;
+      width: 100%;
+      background-color: {{ section.settings.color_background_section }};
+      border: 1px solid {{ section.settings.color_border_section }};
+      border-radius: 8px;
+      padding: 24px;
+      color: {{ section.settings.color_text_section }};
+      font-size: 18px;
+      line-height: 120%;
+    }
+  
+    .infos-product__panel {
+      display: none;
+    }
+  
+    .infos-product__panel.active {
+      display: block;
+    }
+  
+    .infos-product__panel h3 {
+      margin: 0 0 16px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: {{ section.settings.color_text_section }};
+    }
+  
+    .infos-product__panel p {
+      margin: 0 0 12px 0;
+      color: {{ section.settings.color_text_section }};
+    }
+  
+    .infos-product__panel p:last-child {
+      margin-bottom: 0;
+    }
+  
+    @media (max-width: 768px) {
+        .infos-product{
+            align-items: flex-start;
+        }
+        .infos-product__panel{
+            font-size: 10px;
+            line-height: 100%;
+        }
+        .infos-product__content {
+            padding: 16px;
+            width: 100%;
+            height: 100%;
+            min-height: 160px;
+        }
+        .infos-product__tab{
+            font-size: 8.094px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 120%; /* 9.712px */
+        }
+        .infos-product__tab {
+            flex-shrink: 0;
+            padding: 6.475px 16.187px;
+            width: 108px;
+            height: 35px;
+         }
+      .infos-product {
+        gap: 16px;
+        padding: 15px;
+      }
+    }
+    .spacer-{{ section.id }}-top{
+        padding-top: {{ section.settings.padding_space }}px;
+    }
+    .spacer-{{ section.id }}-bottom{
+        padding-bottom: {{ section.settings.padding_space }}px;
+    }
+    @media (max-width: 749px){
+        .spacer-{{ section.id }}-top{
+            padding-top: {{ section.settings.padding_space_mobile }}px;
+        }
+        .spacer-{{ section.id }}-bottom{
+            padding-bottom: {{ section.settings.padding_space_mobile }}px;
+        }
+    }
+  </style>
+
+  <div class="spacer-{{ section.id }}-top">&nbsp;</div>
+  <div class="infos-product page-width">
+    <div class="infos-product__tabs">
+      <button class="infos-product__tab active" data-tab="modo-uso">
+        Modo de uso
+      </button>
+      <button class="infos-product__tab" data-tab="composicao">
+        Composição Técnica
+      </button>
+      <button class="infos-product__tab" data-tab="advertencias">
+        Advertências
+      </button>
+    </div>
+  
+    <div class="infos-product__content">
+      <div class="infos-product__panel active" id="modo-uso">
+        {% if section.settings.modo_uso_text != blank %}
+          {{ section.settings.modo_uso_text }}
+        {% else %}
+          <p>Para resultados ainda mais eficazes, use à noite, com a pele limpa e seca. Após higienizar a região desejada, borrife uma pequena quantidade do produto diretamente sobre a pele ou aplique com o auxílio de um chumaço de algodão, espalhando delicadamente até completa absorção.</p>
+          <p><strong>Não é necessário enxaguar.</strong></p>
+          <p>Inclua na sua rotina diária de cuidados, o uso contínuo é essencial para alcançar a uniformização do tom, reduzir manchas e revelar uma pele visivelmente mais bonita e saudável.</p>
+        {% endif %}
+      </div>
+  
+      <div class="infos-product__panel" id="composicao">
+        {% if section.settings.composicao != blank %}
+          {{ section.settings.composicao }}
+        {% else %}
+          <p>Informações sobre a composição técnica do produto.</p>
+        {% endif %}
+      </div>
+  
+      <div class="infos-product__panel" id="advertencias">
+        {% if section.settings.cuidados != blank %}
+          {{ section.settings.cuidados }}
+        {% else %}
+          <p>Informações sobre cuidados e advertências do produto.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="spacer-{{ section.id }}-bottom">&nbsp;</div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabs = document.querySelectorAll('.infos-product__tab');
+      const panels = document.querySelectorAll('.infos-product__panel');
+  
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          const targetTab = this.dataset.tab;
+  
+          // Remove active class from all tabs and panels
+          tabs.forEach(t => t.classList.remove('active'));
+          panels.forEach(p => p.classList.remove('active'));
+  
+          // Add active class to clicked tab and corresponding panel
+          this.classList.add('active');
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+    });
+  </script>
+  
+  {% schema %}
+  {
+    "name": "Infos Product",
+    "settings": [
+        {
+                "type": "number",
+                 "id":"padding_space",
+                 "label": "Padding Space",
+                 "default": 50
+            },
+            {
+                "type": "number",
+                 "id":"padding_space_mobile",
+                 "label": "Padding Space Mobile",
+                 "default": 30
+            },
+      {
+        "type": "richtext",
+        "id": "modo_uso_text",
+        "label": "Texto de modo de uso"
+      },
+      {
+        "type": "richtext",
+        "id": "composicao",
+        "label": "Texto de composição"
+      },
+      {
+        "type": "richtext",
+        "id": "cuidados",
+        "label": "Advertências"
+      },
+      {
+        "type": "color",
+        "id": "color_background_tab_select",
+        "label": "Cor de fundo do tab selecionado",
+        "default": "#8C20D5"
+      },
+      {
+        "type": "color",
+        "id": "color_text_tab_select",
+        "label": "Cor do texto do tab selecionado",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_background_tab_unselect",
+        "label": "Cor de fundo do tab não selecionado",
+        "default": "#F4E8FF"
+      },
+      {
+        "type": "color",
+        "id": "color_text_tab_unselect",
+        "label": "Cor do texto do tab não selecionado",
+        "default": "#9F30ED"
+      },
+      {
+        "type": "color",
+        "id": "color_border_section",
+        "label": "Cor da borda da seção",
+        "default": "#8C20D5"
+      },
+      {
+        "type": "color",
+        "id": "color_background_section",
+        "label": "Cor de fundo da seção",
+        "default": "#FBF5FF"
+      },
+      {
+        "type": "color",
+        "id": "color_text_section",
+        "label": "Cor do texto da seção",
+        "default": "#68686E"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Infos Product"
+      }
+    ]
+  }
+  {% endschema %}

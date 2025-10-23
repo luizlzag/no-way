@@ -1,0 +1,349 @@
+<div class="spacer-{{ section.id }}-top">&nbsp;</div>
+
+<div class="newsletter-v2-{{ section.id }} page-width">
+    <picture>
+        <!-- mobile first -->
+        <source media="(max-width: 749px)"
+                srcset="{{ section.settings.image_mobile | image_url: width: 800 }} 1x, {{ section.settings.image_mobile | image_url: width: 1600 }} 2x">
+        <source media="(min-width: 750px)"
+                srcset="{{ section.settings.image | image_url: width: 1200 }} 1x, {{ section.settings.image | image_url: width: 1920 }} 2x">
+        <img
+          src="{{ section.settings.image | image_url: width: 1200 }}"
+          alt="{{ section.settings.image.alt | escape }}"
+          loading="lazy"
+          decoding="async"
+          class="newsletter-v2-{{ section.id }}__img"
+          width="100%" height="auto">
+      </picture>
+  <div class="newsletter-v2-{{ section.id }}__content">
+    <div class="newsletter-v2-{{ section.id }}__content-inner">
+      <div class="newsletter-v2-{{ section.id }}__title">{{ section.settings.title }}</div>
+      <p class="newsletter-v2-{{ section.id }}__description">{{ section.settings.description }}</p>
+    </div>
+    <div class="newsletter-v2-{{ section.id }}__form">
+    {%- form 'customer', class: 'newsletter-form', id: 'newsletter-form-{{ section.id }}' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        {%- if form.posted_successfully? -%}
+            <h3 class="form-status form-status-success" tabindex="-1" autofocus>
+            Obrigado por se inscrever!
+            {%- if section.settings.link_button_redirect != blank -%}
+                Redirecionando...
+            {%- endif -%}
+            </h3>
+        {%- endif -%}
+
+        {%- if form.errors -%}
+            <div class="form-status form-status--error" tabindex="-1" autofocus>
+            <h3 class="form-status__title">Ocorreu um erro.</h3>
+            {{ form.errors | default_errors }}
+            </div>
+        {%- endif -%}
+
+        <div class="newsletter-v2-{{ section.id }}__form-inner">
+            <input 
+            type="email" 
+            name="contact[email]" 
+            placeholder="Email"
+            required
+            aria-required="true"
+            autocorrect="off"
+            autocapitalize="off"
+            >
+            <input 
+            type="text" 
+            name="contact[first_name]" 
+            placeholder="Nome"
+            >
+        </div>
+        <button type="submit" class="submit-btn">
+            <span class="btn-text">{{ section.settings.button_text }}</span>
+            <span class="btn-loader"></span>
+        </button>
+    {%- endform -%}
+    </div>
+  </div>
+</div>
+
+<div class="spacer-{{ section.id }}-bottom">&nbsp;</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+      const form = document.getElementById("newsletter-form-{{ section.id }}");
+      const button = form.querySelector(".submit-btn");
+    
+      if(form){
+        form.addEventListener("submit", function(){
+          button.classList.add("loading");
+          button.disabled = true;
+        });
+      }
+    });
+</script>
+    
+
+{% style %}
+  /* SEU CSS CONTINUA AQUI - SEM MUDANÇAS */
+  .spacer-{{ section.id }}-top{
+    padding-top: {{ section.settings.padding_space }}px;
+  }
+  .spacer-{{ section.id }}-bottom{
+    padding-bottom: {{ section.settings.padding_space }}px;
+  }
+  @media (max-width: 749px){
+    .spacer-{{ section.id }}-top{
+      padding-top: {{ section.settings.padding_space_mobile }}px;
+    }
+    .spacer-{{ section.id }}-bottom{
+      padding-bottom: {{ section.settings.padding_space_mobile_bottom }}px;
+    }
+  }
+
+  .newsletter-v2-{{ section.id }} img{
+    border-radius: {{ section.settings.border_radius_img }}px;
+  }
+  .newsletter-v2-{{ section.id }}{
+    position: relative;
+  }
+  .newsletter-v2-{{ section.id }}__title{
+    color: {{ section.settings.color_title }};
+    font-size: {{ section.settings.font_size_title }}px;
+  }
+  .newsletter-v2-{{ section.id }}__title p{
+    margin: 0px;
+  }
+  .newsletter-v2-{{ section.id }}__title strong{
+    color: {{ section.settings.color_text_strong }};
+  }
+  .newsletter-v2-{{ section.id }}__description{
+    color: {{ section.settings.color_description }};
+    font-size: {{ section.settings.font_size_description }}px;
+    font-weight: 700;
+    margin: 0px;
+  }
+  .newsletter-v2-{{ section.id }}__description p{
+    margin: 0px;
+  }
+  .newsletter-v2-{{ section.id }}__content{
+    display: flex;
+    align-items: center;
+    background-color: {{ section.settings.color_background }};
+    padding: 60px;
+    width: 85%;
+  }
+  .newsletter-v2-{{ section.id }}__content{
+    position: absolute;
+    bottom: -15%;
+    gap: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .newsletter-v2-{{ section.id }}__form button{
+    background-color: {{ section.settings.color_button }};
+    color: {{ section.settings.color_text_button }};
+    width: 414.75px; /* Considere usar % ou flex-grow para melhor responsividade */
+    border-radius: 40px;
+    padding: 16px 20px;
+    cursor: pointer;
+    border: none;
+  }
+  .newsletter-v2-{{ section.id }}__form input{
+    border-radius: {{ section.settings.border_radius_img }}px;
+    background: var(--Gray-100, #EFEFF0);
+    width: 250px; /* Considere usar % ou flex-grow para melhor responsividade */
+    border: none;
+    padding: 16px 20px;
+  }
+  .newsletter-v2-{{ section.id }}__form{
+    display: flex;
+    flex-direction: column;
+  }
+  .newsletter-v2-{{ section.id }}__form-inner{
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  /* Estilos para mensagens de sucesso/erro */
+  .form-status-success {
+    color: green;
+    margin-bottom: 15px;
+  }
+  .form-status--error {
+    color: red;
+    border: 1px solid red;
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+  /* Sucesso e erro aparecem com fade-in */
+.form-status {
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.form-status[tabindex="-1"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Botão estado normal */
+.submit-btn {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.submit-btn .btn-loader {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,.5);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+.submit-btn.loading .btn-text {
+  opacity: 0.5;
+}
+.submit-btn.loading .btn-loader {
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@media (max-width: 890px){
+    .newsletter-v2-{{ section.id }}__content{
+        display: grid;
+        padding: 24px;
+    }
+    .newsletter-v2-{{ section.id }}__form-inner{
+        display: grid;
+    }
+    .newsletter-v2-{{ section.id }}__form button{
+        width: 100%;
+    }
+    .newsletter-v2-{{ section.id }}__title{
+        font-size: 32px;
+    }
+    .newsletter-v2-{{ section.id }}__description{
+        font-size: 16px;
+    }
+    .newsletter-v2-{{ section.id }}__content{
+        bottom: -90%;
+    }
+    .newsletter-v2-{{ section.id }}__form input{
+        width: 265px;
+    }
+}
+{% endstyle %}
+
+{% schema %}
+  /* SEU SCHEMA CONTINUA AQUI - SEM MUDANÇAS */
+  {
+    "name": "Newsletter V2",
+    "settings": [
+      {
+        "type": "number",
+        "id":"padding_space",
+        "label": "Padding Space",
+        "default": 50
+      },
+      {
+        "type": "number",
+        "id":"padding_space_mobile",
+        "label": "Padding Space Mobile",
+        "default": 30
+      },
+      {
+        "type": "number",
+        "id":"padding_space_mobile_bottom",
+        "label": "Padding Space Mobile Bottom",
+        "default": 30
+      },
+      {
+        "type": "richtext",
+        "id": "title",
+        "label": "Title"
+      },
+      {
+        "type": "color",
+        "id": "color_title",
+        "label": "Color Title"
+      },
+      {
+        "type": "color",
+        "id": "color_description",
+        "label": "Color Description"
+      },
+      {
+        "type": "color",
+        "id": "color_text_strong",
+        "label": "Cor do texto forte"
+      },
+      {
+        "type": "color",
+        "id": "color_button",
+        "label": "Cor de fundo do botão"
+      },
+      {
+        "type": "color",
+        "id": "color_text_button",
+        "label": "Cor do texto do botão"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Cor de fundo"
+      },
+      {
+        "type": "number",
+        "id": "font_size_title",
+        "label": "Tamanho da fonte do título",
+        "default": 40
+      },
+      {
+        "type": "number",
+        "id": "font_size_description",
+        "label": "Tamanho da fonte da descrição",
+        "default": 16
+      },
+      {
+        "type": "number",
+        "id": "border_radius_img",
+        "label": "Arredondamento da imagem",
+        "default": 16
+      },
+      {
+        "type": "text",
+        "id": "description",
+        "label": "Description"
+      },
+      {
+        "type": "text",
+        "id": "button_text",
+        "label": "Button Text"
+      },
+      {
+        "type": "url",
+        "id": "link_button_redirect",
+        "label": "Link do botão"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_mobile",
+        "label": "Image Mobile"
+      } 
+    ],
+    "presets": [
+      {
+        "name": "Newsletter V2"
+      }
+    ]
+  }
+{% endschema %}

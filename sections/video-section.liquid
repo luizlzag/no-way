@@ -1,0 +1,419 @@
+<div class="main-section-video-{{ section.id }} page-width {{ section.settings.class_custom }}-{{ section.id }}">
+  <div class="main-title-section-{{ section.id }}">
+    <h2 class="title-section-{{ section.id }}">{{ section.settings.title_section }}</h2>
+  </div>
+
+  <div class="swiper swiper-video-{{ section.id }}">
+    <div class="swiper-wrapper">
+      {% for block in section.blocks %}
+        <div class="swiper-slide carousel-cell-{{ section.id }}" data-section-id="{{ section.id }}" data-index="{{ forloop.index0 }}">
+          {% if block.settings.video_url != blank %}
+            {{ block.settings.video_url | video_tag: image_size: '400x', autoplay: false, loop: true, muted: true, controls: false }}
+          {% else %}
+            {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    </div>
+</div>
+
+<style>
+  .main-section-video-{{ section.id }} {
+    overflow: hidden;
+  }
+  .desktop-only-{{ section.id }} {
+    display: block;
+  }
+  .mobile-only-{{ section.id }} {
+    display: none;
+  }
+  .title-section-{{ section.id }} {
+    text-align: center;
+    font-size: {{ section.settings.font_size_title }}px;
+    font-weight: {{ section.settings.peso_fonte_title }};
+    margin-top: 0px;
+    margin-bottom: 40px;
+  }
+  /* Ajuste no container do carrossel para Swiper */
+  .swiper-video-{{ section.id }} {
+    width: 100%;
+    overflow: hidden; /* Mudei para hidden para evitar problemas de layout */
+  }
+  
+  /* Garante que o wrapper do Swiper respeite as larguras dos slides */
+  .swiper-video-{{ section.id }} .swiper-wrapper {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Configuração específica para slides do Swiper */
+  .carousel-cell-{{ section.id }}.swiper-slide {
+    width: {{ section.settings.width_video }}px;
+    height: {{ section.settings.height_video }}px;
+    border-radius: {{ section.settings.border_radius_videos }}px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0; /* Garante que o slide não encolha */
+  }
+  .carousel-cell-{{ section.id }} video,
+  .carousel-cell-{{ section.id }} .placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media screen and (max-width: 768px) {
+    .carousel-cell-{{ section.id }}.swiper-slide {
+      width: 50px;
+      height: 50px;
+      border-radius: 50px;
+      border: 2px solid {{ section.settings.color_border }};
+    }
+    .main-section-video-{{ section.id }} {
+      padding: {{ section.settings.padding_space_mobile }}px 0;
+    }
+    .title-section-{{ section.id }} {
+        display: none;
+    }
+    .desktop-only-{{ section.id }} {
+      display: none;
+    }
+    .mobile-only-{{ section.id }} {
+      display: block;
+      padding: 10px 12px;
+    }
+  }
+</style>
+
+<script>
+// O gerenciador de modal (videoModalManager) e as funções de carrinho permanecem iguais.
+window.videoModalManager = window.videoModalManager || {
+  dataSources: {},
+  activeDataSource: null,
+  currentIndex: 0,
+
+  registerDataSource(id, data) {
+    this.dataSources[id] = data;
+  },
+
+  openModal(sourceId, index) {
+    this.activeDataSource = this.dataSources[sourceId];
+    if (!this.activeDataSource) return;
+    this.currentIndex = index;
+    this.updateModalContent();
+    document.getElementById('global-video-modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  },
+
+  closeModal() {
+    const modal = document.getElementById('global-video-modal');
+    const player = document.getElementById('global-modal-video-player');
+    modal.style.display = 'none';
+    player.pause();
+    player.src = "";
+    document.body.style.overflow = 'auto';
+    this.activeDataSource = null;
+  },
+
+  navigate(direction) {
+    if (!this.activeDataSource) return;
+    const total = this.activeDataSource.length;
+    this.currentIndex = (this.currentIndex + direction + total) % total;
+    this.updateModalContent();
+  },
+
+  updateModalContent() {
+    const data = this.activeDataSource[this.currentIndex];
+    const player = document.getElementById('global-modal-video-player');
+    const priceEl = document.querySelector('#global-video-modal .modal-product-price');
+    const priceOldEl = document.querySelector('#global-video-modal .modal-product-price-old');
+    const installmentsEl = document.querySelector('#global-video-modal .modal-product-installments');
+    const form = document.querySelector('#global-video-modal .modal-add-to-cart-form');
+    const variantInput = document.querySelector('#global-video-modal .modal-variant-id');
+    const progressBar = document.querySelector('#global-video-modal .video-progress-bar');
+
+    if (progressBar) {
+      progressBar.style.width = '0%';
+    }
+
+    player.src = data.videoUrl;
+    player.play();
+
+    if (data.product) {
+      priceEl.textContent = data.price;
+      priceOldEl.textContent = data.priceOld;
+      installmentsEl.textContent = data.installments;
+      variantInput.value = data.variantId;
+      form.style.display = 'block';
+    } else {
+      priceEl.textContent = '';
+      priceOldEl.textContent = '';
+      installmentsEl.textContent = '';
+      form.style.display = 'none';
+    }
+  }
+};
+
+// Inicialização específica para esta seção
+document.addEventListener('DOMContentLoaded', () => {
+  const sectionId = {{ section.id | json }};
+  const videosData = [
+    {% for block in section.blocks %}
+      {
+        videoUrl: "{{ block.settings.video_url.sources[1].url }}",
+        {% if block.settings.product_link_video %}
+          product: {{ block.settings.product_link_video | json }},
+          productUrl: "{{ shop.url | append: block.settings.product_link_video.url }}",
+          variantId: "{{ block.settings.product_link_video.selected_or_first_available_variant.id }}",
+          priceOld:"{{ block.settings.product_link_video.compare_at_price | money }}",
+          price: "{{ block.settings.product_link_video.price | money }}",
+          installments: "até {{ settings.parcelas_sem_juros }}x de {{ block.settings.product_link_video.price | divided_by: settings.parcelas_sem_juros | money }} sem juros"
+        {% else %}
+          product: null
+        {% endif %}
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
+
+  window.videoModalManager.registerDataSource(sectionId, videosData);
+
+  // --- SUBSTITUIÇÃO DO FLICKITY PELO SWIPER ---
+  const carouselEl = document.querySelector('.swiper-video-{{ section.id }}');
+  if (carouselEl && typeof Swiper === 'function') {
+    new Swiper(carouselEl, {
+      loop: false, // Loop não é ideal para uma lista finita de vídeos, mas pode ser ativado
+      slidesPerView: 'auto', // Respeita a largura definida no CSS
+      spaceBetween: 10, // Espaçamento entre os slides
+      freeMode: true, // Permite "arrastar" o carrossel livremente, com inércia
+      grabCursor: true, // Mostra cursor de "mão" ao passar o mouse
+      watchSlidesProgress: true, // Melhora a performance
+      preventClicks: false, // Permite cliques nos slides
+      preventClicksPropagation: false, // Permite propagação de cliques
+      // Configurações específicas para mobile
+      breakpoints: {
+        768: {
+          spaceBetween: 10
+        }
+      }
+    });
+  }
+
+  document.querySelectorAll('.carousel-cell-{{ section.id }}').forEach(cell => {
+    cell.addEventListener('click', (e) => {
+      const sId = e.currentTarget.dataset.sectionId;
+      const index = parseInt(e.currentTarget.dataset.index, 10);
+      window.videoModalManager.openModal(sId, index);
+    });
+  });
+});
+
+
+function updateCartDrawer() {
+  fetch('/cart?section_id=cart-drawer')
+    .then(res => res.text())
+    .then(responseText => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(responseText, 'text/html');
+      const cartDrawer = document.querySelector('cart-drawer');
+
+      if (!cartDrawer) {
+        console.error('Elemento cart-drawer não encontrado.');
+        return;
+      }
+
+      doc.querySelectorAll('script').forEach(s => s.remove());
+
+      const newDrawerContent = doc.querySelector('#CartDrawer');
+      const currentDrawerContent = cartDrawer.querySelector('#CartDrawer');
+
+      if (currentDrawerContent && newDrawerContent) {
+        currentDrawerContent.innerHTML = newDrawerContent.innerHTML;
+        cartDrawer.classList.remove('is-empty');
+        const drawerHeader = currentDrawerContent.querySelector('.drawer__header');
+        if (drawerHeader) drawerHeader.style.display = 'block';
+        if (!cartDrawer.classList.contains('active')) {
+          cartDrawer.classList.add('active');
+          document.body.classList.add('overflow-hidden');
+        }
+      } else {
+        console.error('Erro ao atualizar o conteúdo do drawer.');
+      }
+    })
+    .catch(err => {
+      console.error('Erro ao atualizar o drawer do carrinho:', err);
+    });
+}
+
+// Anexar eventos do modal uma única vez
+if (!window.videoModalListenersAttached) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('global-video-modal');
+    if (!modal) return;
+
+     modal.querySelector('.modal-share-button').addEventListener('click', () => {
+        const manager = window.videoModalManager;
+        if (!manager.activeDataSource) return;
+
+        const currentData = manager.activeDataSource[manager.currentIndex];
+
+        if (currentData && currentData.productUrl) {
+            const productUrl = currentData.productUrl;
+            const message = encodeURIComponent('Olha que incrível esse produto que encontrei: ' + productUrl);
+            const whatsappUrl = 'https://api.whatsapp.com/send?text=' + message;
+
+            window.open(whatsappUrl, '_blank');
+        } else {
+            console.error("URL do produto não encontrada para compartilhamento.");
+            alert("Não foi possível compartilhar este produto.");
+        }
+    });
+    modal.querySelector('.modal-close-button').addEventListener('click', () => window.videoModalManager.closeModal());
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) window.videoModalManager.closeModal();
+    });
+    modal.querySelector('.modal-nav-button.prev').addEventListener('click', () => window.videoModalManager.navigate(-1));
+    modal.querySelector('.modal-nav-button.next').addEventListener('click', () => window.videoModalManager.navigate(1));
+
+    const addToCartForm = modal.querySelector('.modal-add-to-cart-form');
+    addToCartForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const button = addToCartForm.querySelector('button');
+        const originalText = button.textContent;
+        button.textContent = 'Adicionando...';
+        button.disabled = true;
+
+        const formData = {
+            'items': [{
+                'id': addToCartForm.querySelector('.modal-variant-id').value,
+                'quantity': 1
+            }]
+        };
+
+        fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            button.textContent = 'Adicionado!';
+            if (document.querySelector('cart-drawer')) document.querySelector('cart-drawer').open();
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.disabled = false;
+                window.videoModalManager.closeModal();
+                updateCartDrawer();
+            }, 1500);
+        })
+        .catch((error) => {
+            console.error('Erro:', error);
+            button.textContent = 'Erro!';
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.disabled = false;
+            }, 1500);
+        });
+    });
+  });
+
+  window.videoModalListenersAttached = true;
+}
+</script>
+
+{% schema %}
+{
+    "name": "Carrousel Videos",
+    "settings": [
+        {
+        "type": "text",
+        "id": "class_custom",
+        "label": "Classe customizada",
+        "info": "Adicione uma classe customizada para a seção"
+        },
+        {
+            "type": "number",
+            "id":"padding_space",
+            "label": "Padding Space",
+            "default": 50
+        },
+        {
+            "type": "number",
+            "id":"padding_space_mobile",
+            "label": "Padding Space Mobile",
+            "default": 30
+        },
+        {
+            "type": "text",
+            "id": "title_section",
+            "label": "Titulo da seção"
+        },
+        {
+            "type": "number",
+            "id": "font_size_title",
+            "label": "Tamanho da fonte (Titulo)",
+            "default": 40
+        },
+        {
+            "type": "number",
+            "id": "border_radius_videos",
+            "label": "Arredondamento Borda",
+            "default": 12
+        },
+        {
+            "type": "color",
+            "id": "background_play_button",
+            "label": "Cor de fundo do botão play",
+            "default": "#FE68A099"
+        },
+        {
+          "type": "color",
+          "id": "color_border",
+          "label": "Cor da borda",
+          "default": "#000000"
+        },
+        {
+            "type": "number",
+            "id": "width_video",
+            "label": "Largura video",
+            "default": 230
+        },
+        {
+            "type": "number",
+            "id": "height_video",
+            "label": "Altura video",
+            "default": 408
+        },
+        {
+            "type": "number",
+            "id": "peso_fonte_title",
+            "label": "Peso da fonte",
+            "default": 700
+        }
+    ],
+    "blocks": [
+        {
+            "type": "video",
+            "name": "video",
+            "settings": [
+                {
+                    "type": "video",
+                    "id": "video_url",
+                    "label": "Video"
+                },
+                {
+                    "type": "product",
+                    "id": "product_link_video",
+                    "label": "Produto vinculado ao video"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Carrousel Videos"
+        }
+    ]
+}
+{% endschema %}

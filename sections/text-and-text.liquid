@@ -1,0 +1,45 @@
+<div class="main-container-{{ section.id }} page-width strong-color">
+    <h2 class="title-section">{{ section.settings.title }}</h2>
+    <p class="description">{{ section.settings.description }}</p>
+</div>
+
+<style>
+    .main-container-{{ section.id }} h2, p{
+        width: 100%;
+    }
+    .main-container-{{ section.id }}{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    @media screen and (max-width: 768px) {
+        .main-container-{{ section.id }} {
+            flex-direction: column;
+            gap: 8px;
+            text-align: start;
+            align-items: start;
+        }
+    }
+
+</style>
+{% schema %}
+    {
+        "name": "Image with Text v2",
+        "settings": [
+            {
+                "type": "richtext",
+                "id": "title",
+                "label": "Title"
+            },
+            {
+                "type": "text",
+                "id": "description",
+                "label": "Description"
+            }
+        ],"presets": [
+           {
+                "name": "Text with Text v2"
+           }
+        ]
+    }
+{% endschema %}

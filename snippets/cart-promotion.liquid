@@ -1,0 +1,264 @@
+<style>
+  /* --- GERAL E CONTAINER --- */
+  .container-main-cart-promotion {
+    max-width: 1200px;
+    margin: 0 auto;
+    /* Adicionado para conter as setas de navegação posicionadas absolutamente */
+    position: relative; 
+    padding: 0 32px; /* Espaço para as setas não sobreporem o conteúdo */
+    margin-top: 32px;
+    margin-bottom:32px;
+  }
+
+  .unlink-custom {
+    text-decoration: none;
+  }
+
+  /* --- CABEÇALHO DA PROMOÇÃO (TÍTULO + SETAS) --- */
+  /* NOVO: Wrapper para o título e as setas */
+  .promotion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  /* MODIFICADO: Estilo do título */
+  .promotion-header .title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1D1D1F;
+    margin: 0; /* Remove margens padrão */
+  }
+
+  /* NOVO: Container para as setas, para facilitar o alinhamento */
+  .promotion-nav-buttons {
+    display: flex;
+    gap: 10px; /* Espaço entre as setas < e > */
+    position: static; /* Remove posicionamento antigo */
+    transform: none; /* Remove transform antigo */
+    width: auto;
+  }
+
+  /* --- ESTILOS DO SWIPER E NAVEGAÇÃO --- */
+  .swiper-button-prev,
+  .swiper-button-next {
+    /* MODIFICADO: Posição relativa ao container do cabeçalho */
+    position: static !important;
+    margin: 0 !important;
+    transform: none !important;
+    width: 24px !important;
+    height: 24px !important;
+    color: #1D1D1F !important;
+     border-radius: 12px;
+    border: 0.686px solid var(--Gray-200, #DFDFE0) !important;
+    background: var(--MID-WHITE, #F9F9FB) !important;
+    transition: opacity 0.3s ease; /* Transição suave */
+  }
+
+  .swiper-button-prev::after,
+  .swiper-button-next::after {
+    font-size: 16px !important; /* Tamanho do ícone da seta */
+    font-weight: bold;
+  }
+
+  /* --- CARD DE PRODUTO --- */
+  /* MODIFICADO: Simplificando os seletores */
+  .product-card {
+    border-radius: 8px;
+    background: var(--Gray-100, #EFEFF0);
+    display: flex !important;
+    align-items: center;
+    gap: 16px; /* Espaço entre a imagem e as informações */
+    padding: 16px;
+    border-radius: 8px;
+    width: 100%; /* Ocupa toda a largura do slide */
+    box-sizing: border-box;
+    /* SOLUÇÃO ALTURA IGUAL: Garante que o card ocupe toda a altura do slide */
+    height: 100%; 
+  }
+
+  /* SOLUÇÃO ALTURA IGUAL: O swiper-slide precisa ter altura automática */
+  .swiper-slide {
+    height: auto; 
+    display: flex;
+  }
+  
+  .product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    flex-shrink: 0; /* Impede que a imagem encolha */
+    border-radius: 8px;
+  }
+
+  .product-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-grow: 1;
+        min-width: 0;
+  }
+
+  .product-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1D1D1F;
+    margin: 0px; /* Adiciona espaço abaixo do título */
+    /* Limita o texto a 2 linhas para melhor consistência visual */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .product-price {
+    font-size: 16px;
+    margin:0px;
+    line-height: 140%; /* 22.4px */
+  }
+  .old-price-off{
+    color: var(--Gray-300, #7C7C83);
+    leading-trim: both;
+    text-edge: cap;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%; /* 21px */
+    text-decoration-line: line-through;
+   }
+  
+  /* MODIFICADO: Simplificando e limpando o botão */
+.button-adicionar-off {
+  height: 40px;
+  padding: 0 12px; /* Ajustado para controle com flex */
+  border-radius: 40px;
+  background: #DFDFE0;
+  color: var(--Gray-600, #313135);
+  border: none;
+  cursor: pointer;
+
+  /* --- NOVAS PROPRIEDADES --- */
+  display: inline-flex;  /* Torna o botão um container flex */
+  align-items: center;    /* Alinha o texto verticalmente ao centro */
+  justify-content: center;/* Alinha o texto horizontalmente ao centro */
+  white-space: nowrap;    /* Impede a quebra de linha do texto */
+  flex-shrink: 0;         /* Impede que o botão encolha se não houver espaço */
+
+  /* --- PROPRIEDADES DE TEXTO --- */
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1; /* Melhora o controle de altura com flex */
+}
+  @media(max-width:768px){
+    .container-main-cart-promotion{
+            padding: 0 18px;
+                margin-top: 18px;
+            margin-bottom: 18px;
+    }
+    .product-card{
+        gap:8px;
+        padding: 12px;
+    }
+  }
+</style>
+
+<div class="container-main-cart-promotion">
+  
+  <div class="promotion-header">
+    <h2 class="title">Leve Junto</h2>
+    <div class="promotion-nav-buttons">
+      <div class="swiper-button-prev">&nbsp;</div>
+      <div class="swiper-button-next">&nbsp;</div>
+    </div>
+  </div>
+
+  <div class="swiper card-off-carrousel" data-section-id="{{ section.id }}">
+    <div class="swiper-wrapper">
+      {% assign collection = collections[settings.cart_drawer_collection] %}
+
+      {% for product in collection.products %}
+        <div class="swiper-slide"> 
+          <div class="product-card">
+            <a href="{{ product.url }}">
+              <img
+                src="{{ product.featured_image | img_url: '400x' }}"
+                alt="{{ product.featured_image.alt | escape }}"
+                width="auto"
+                height="auto"
+                class="product-image"
+                loading="lazy"
+              >
+            </a>
+            <div class="product-info">
+              <div> 
+                <h3 class="product-title">{{ product.title }}</h3>
+                <s class="old-price-off">{{ product.compare_at_price | money }}</s>
+                <p class="product-price price-item--last">
+                  {{ product.price | money }}
+                </p>
+              </div>
+              <a class="unlink-custom" href="{{ product.url }}">
+                <span class="button-adicionar-off">+ Adicionar</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
+<script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
+<script>
+  // Seu script JS pode permanecer o mesmo, mas precisa apontar para os novos seletores das setas.
+  function waitForDrawerAndInitSwiper() {
+    const drawer = document.querySelector('cart-drawer');
+    if (!drawer) return;
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          if (drawer.classList.contains("active")) {
+            setTimeout(() => {
+              document.querySelectorAll('.card-off-carrousel').forEach((el) => {
+                if (el.swiper) return;
+
+                const swiperWrapper = el.querySelector('.swiper-wrapper');
+                if (!swiperWrapper || swiperWrapper.children.length === 0) return;
+
+                // Encontra o container pai para pegar as setas
+                const mainContainer = el.closest('.container-main-cart-promotion');
+
+                new Swiper(el, {
+                  slidesPerView: 'auto',
+                  centeredSlides: true,
+                  centerInsufficientSlides: true,
+                  spaceBetween: 16, // Um valor fixo para consistência
+                  navigation: {
+                    // MODIFICADO: Seletores apontam para as novas localizações das setas
+                    nextEl: mainContainer.querySelector('.swiper-button-next'),
+                    prevEl: mainContainer.querySelector('.swiper-button-prev'),
+                  },
+                  loop: false,
+                  resistanceRatio: 0,
+                  // ...outras configurações...
+                });
+                console.log('[✅ Swiper inicializado com sucesso]');
+              });
+            }, 300);
+          }
+        }
+      });
+    });
+
+    observer.observe(drawer, { attributes: true });
+  }
+
+  document.addEventListener("DOMContentLoaded", waitForDrawerAndInitSwiper);
+</script>

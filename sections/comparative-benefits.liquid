@@ -1,0 +1,240 @@
+
+<link rel="stylesheet" href="https://unpkg.com/img-comparison-slider@8/dist/styles.css" />
+<script src="https://unpkg.com/img-comparison-slider@8/dist/index.js" defer></script>
+
+<div class="container-main-{{ section.id }}">
+    {%- if section.settings.img_1_comparative != blank and section.settings.img_2_comparative != blank -%}
+      <img-comparison-slider class="slider-with-custom-handle-{{ section.id }}">
+        {{ section.settings.img_1_comparative | image_url: width: 2000 | image_tag: slot: 'first', loading: 'lazy', alt: section.settings.img_1_comparative.alt }}
+        {{ section.settings.img_2_comparative | image_url: width: 2000 | image_tag: slot: 'second', loading: 'lazy', alt: section.settings.img_2_comparative.alt }}
+        <div slot="handle" class="custom-handle-{{ section.id }}">
+          <svg width="26" height="50" viewBox="0 0 26 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0.5" y="0.5" width="25" height="49" rx="12.5" fill="#656E52"/>
+            <rect x="0.5" y="0.5" width="25" height="49" rx="12.5" stroke="#656E52"/>
+            <path d="M8 18L8 32" stroke="#EFEFF0" stroke-width="2" stroke-linecap="round"/>
+            <path d="M13 18L13 32" stroke="#EFEFF0" stroke-width="2" stroke-linecap="round"/>
+            <path d="M18 18L18 32" stroke="#EFEFF0" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </img-comparison-slider>
+    {%- endif -%}
+
+    <div class="beneficios-wrapper-{{ section.id }}" >
+      <div class="beneficios-{{ section.id }}-container page-width" style="background: {{ section.settings.beneficios_bg }};">
+         <h2 class="title-container title-section strong-color">
+           {{ section.settings.text_title }}
+         </h2>
+         <div class="beneficios-{{ section.id }}">
+           {%- for block in section.blocks -%}
+             <div class="beneficio-item">
+               {%- if block.settings.img_icon != blank -%}
+                 <div class="beneficio-icon">
+                   {{ block.settings.img_icon | image_url: width: 40 | image_tag: loading: 'lazy' }}
+                 </div>
+               {%- endif -%}
+               {%- if block.settings.text_title_icon != blank -%}
+                 <span class="beneficio-text description">{{ block.settings.text_title_icon }}</span>
+               {%- endif -%}
+             </div>
+           {%- endfor -%}
+         </div>
+         <div class="description-container description">
+          <p>{{ section.settings.text_description }}</p>
+         </div>
+       </div>
+    </div>
+</div>
+
+<style>
+  .beneficios-wrapper-{{ section.id }} {
+    position: relative;
+    z-index: 1;
+    margin-top: -100px; /* Ajuste este valor para o posicionamento desejado */
+  }
+  .beneficios-{{ section.id }}-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding: 40px 80px;
+    max-width: 1216px;
+  }
+
+  .slider-with-custom-handle-{{ section.id }} {
+    --divider-width: 3px;
+    --divider-color: #656E52;
+    --handle-size: 40px;
+    --handle-color: white;
+  }
+
+  .slider-with-custom-handle-{{ section.id }} > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Garante que a segunda imagem também respeite a altura do contêiner */
+  .slider-with-custom-handle-{{ section.id }} [slot="second"] {
+    height: {{section.settings.slider_height_desktop}}px;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .slider-with-custom-handle-{{ section.id }} .custom-handle-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--handle-border-color);
+  }
+
+  .custom-handle-{{ section.id }} .default-icon {
+    /* Remove as setas padrão que a biblioteca adiciona */
+    display: none !important;
+  }
+
+  /* --- Estilos para os Benefícios --- */
+  .beneficios-{{ section.id }}-container .title-container {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .beneficios-{{ section.id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+
+  .beneficio-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .beneficio-icon img {
+      max-width: 30px;
+      height: auto;
+  }
+
+  .beneficio-text {
+    color: var(--PRETO, #000);
+  }
+
+  .description-container {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+      color: var(--Gray-300, #7C7C83);
+  }
+
+  .slider-with-custom-handle-{{ section.id }} {
+    width: 100%; /* Garante que o slider ocupe toda a largura */
+    height: {{ section.settings.slider_height_desktop }}px;
+    max-height: 100vh; /* Evita que o slider seja maior que a tela */
+    overflow: hidden;
+  }
+
+  @media (max-width: 749px) {
+    .slider-with-custom-handle-{{ section.id }} [slot="second"] {
+      height: {{ section.settings.slider_height_mobile }}px;
+    
+    }
+    .slider-with-custom-handle-{{ section.id }} {
+      height: {{ section.settings.slider_height_mobile }}px;
+    }
+    .beneficios-{{ section.id }}-container {
+      gap: 30px;
+      padding: 32px 8px;
+    }
+    .beneficios-wrapper-{{ section.id }} {
+      margin-top: -10px; /* Ajuste para mobile */
+    }
+    .beneficios-{{ section.id }} {
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+    {
+        "name": "Comparativo",
+        "settings": [
+           {
+             "type": "image_picker",
+             "id": "img_1_comparative",
+             "label": "Imagem 1",
+              "info": "Tamanho recomendado: 2000x600"
+           },
+           {
+            "type": "image_picker",
+            "id": "img_2_comparative",
+            "label": "Imagem 2",
+             "info": "Tamanho recomendado: 2000x600"
+          },
+          {
+            "type": "header",
+            "content": "Altura do Slider"
+          },
+          {
+            "type": "range",
+            "id": "slider_height_desktop",
+            "label": "Altura máxima no Desktop",
+            "min": 200,
+            "max": 1000,
+            "step": 20,
+            "unit": "px",
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "slider_height_mobile",
+            "label": "Altura máxima no Mobile",
+            "min": 100,
+            "max": 800,
+            "step": 10,
+            "unit": "px",
+            "default": 400
+          },
+          {
+            "type": "richtext",
+            "id": "text_title",
+            "label": "Titulo"
+          },
+          {
+            "type": "text",
+            "id": "text_description",
+            "label": "Descricao"
+          },
+          {
+            "type": "color_background",
+            "id": "beneficios_bg",
+            "label": "Cor de fundo (Benefícios)",
+            "default": "linear-gradient(#f9f9f9, #f9f9f9)"
+          }
+        ],"blocks": [
+            {
+                "type": "text",
+                "name": "Texto e Icone",
+                "settings": [
+                   {
+                    "type": "text",
+                    "id": "text_title_icon",
+                    "label": "Titulo"
+                   },
+                   {
+                    "type": "image_picker",
+                    "id": "img_icon",
+                    "label": "Icone"
+                   }
+                ]
+            },
+        ],"presets": [
+            {
+                "name": "Comparativo"
+            }
+        ]
+    }
+{% endschema %}

@@ -1,0 +1,177 @@
+{%- liquid
+  assign blocks = section.blocks
+-%}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    background-color: {{ section.settings.color_background_section }};
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+
+  .benefits-cards__title {
+    text-align: start;
+    margin-bottom: 40px;
+  }
+
+  .benefits-cards-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0; /* Garante que não haja espaço entre os cards */
+  }
+
+  .benefit-card {
+    flex: 1; /* Faz com que os cards ocupem o mesmo espaço */
+    min-width: 280px; /* Largura mínima para evitar que fiquem muito estreitos */
+    padding: 24px;
+    text-align: left;
+    display: flex;
+    flex-direction: column; /* Organiza os itens em coluna */
+    justify-content: space-between; /* Empurra o conteúdo para as extremidades */
+    align-items: flex-start;
+  }
+
+  .benefit-card:first-child {
+    position: relative;
+  }
+
+  .benefit-card__logo-wrapper {
+    position: absolute;
+    top: 19px;
+    left: -16px;
+    width: 32.114px;
+    height: 42px;
+  }
+
+  .benefit-card__subtitle {
+    font-size: 1.6rem;
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+
+  .benefit-card__description {
+    font-size: 1.4rem;
+    margin: 0;
+    max-width: 300px; /* Limita a largura da descrição para melhor legibilidade */
+    flex-grow: 1; 
+  }
+
+  @media screen and (max-width: 768px) {
+    .benefits-cards-wrapper {
+      flex-direction: column;
+    }
+
+    .benefit-card__logo-wrapper {
+     
+      top: 9.5px;
+      left: -10px;
+    }
+    .benefit-card__logo-wrapper img{
+        width: 26.057px;
+        height: 25px;
+    }
+  }
+</style>
+
+<div class="page-width">
+  {%- if section.settings.title != blank -%}
+    <div class="benefits-cards__title strong-color title-section">
+      {{ section.settings.title }}
+    </div>
+  {%- endif -%}
+
+  {%- if blocks.size > 0 -%}
+    <div class="benefits-cards-wrapper">
+      {%- for block in blocks -%}
+        <div class="benefit-card" style="background-color: {{ block.settings.color_background }}; color: {{ block.settings.color_text }};" {{ block.shopify_attributes }}>
+          {%- if forloop.first and section.settings.logo_image != blank -%}
+            <div class="benefit-card__logo-wrapper">
+              <img 
+                src="{{ section.settings.logo_image | image_url: width: 64 }}" 
+                alt="{{ section.settings.logo_image.alt | default: 'Logo' | escape }}"
+                width="auto" height="auto" loading="lazy">
+            </div>
+          {%- endif -%}
+          <div class="benefit-card__header">
+            <h3 class="benefit-card__title" style="color: {{ block.settings.color_text }};">{{ block.settings.title | escape }}</h3>
+            <p class="benefit-card__subtitle" style="color: {{ block.settings.color_text }};">{{ block.settings.subtitle | escape }}</p>
+          </div>
+          <div class="benefit-card__description" style="color: {{ block.settings.color_description }};">{{ block.settings.description | escape }}</div>
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+    {
+        "name": "Benefícios em Cards",
+        "settings": [
+            {
+                "type": "richtext",
+                "id": "title",
+                "label": "Título",
+                "default": "<p>Benefícios em Cards</p>"
+            },
+            {
+                "type": "color",
+                "id": "color_background_section",
+                "label": "Cor de Fundo da Seção",
+                "default": "#FDF0F3"
+            },
+            {
+                "type": "image_picker",
+                "id": "logo_image",
+                "label": "Logo para o primeiro card"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "text",
+                "name": "Benefício",
+                "limit": 3,
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Título",
+                        "default": "Título Padrão"
+                    },
+                    {
+                        "type": "text",
+                        "id": "subtitle",
+                        "label": "Subtítulo",
+                        "default": "Subtítulo Padrão"
+                    },
+                    {
+                        "type": "text",
+                        "id": "description",
+                        "label": "Descrição",
+                        "default": "Descrição Padrão"
+                    },
+                    {
+                        "type": "color",
+                        "id": "color_text",
+                        "label": "Cor do Texto",
+                    },
+                    {
+                        "type": "color",
+                        "id": "color_description",
+                        "label": "Cor da Descrição"
+                    },
+                    {
+                        "type": "color",
+                        "id": "color_background",
+                        "label": "Cor de Fundo",
+                    } 
+                ]
+            }
+        ],
+        "presets": [
+            {
+                "name": "Benefícios em Cards"
+            }
+        ]
+    }
+{% endschema %}

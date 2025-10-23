@@ -1,0 +1,530 @@
+{%- style -%}
+  .details-product-container-{{ section.id }} {
+    position: relative;
+    overflow: hidden;
+    padding-top: 80px;
+    padding-bottom: 80px;
+    background-color: {{ section.settings.background_color }};
+  }
+
+  .details-product-background-images-{{ section.id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .details-product-background-images-{{ section.id }}::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;/* Overlay para escurecer a imagem */
+    z-index: 1;
+  }
+
+  .details-product-background-images-{{ section.id }} .product-background-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+
+  .details-product-background-images-{{ section.id }} .product-background-item.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .details-product-main-content-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    position: relative;
+    z-index: 2;
+  }
+
+  @media (min-width: 990px) {
+    .details-product-main-content-{{ section.id }} {
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+    }
+  }
+
+  .details-product-info-{{ section.id }} {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 900px;
+    box-sizing: border-box;
+  }
+
+  .details-product-info-{{ section.id }} .product-info-item {
+    display: none;
+  }
+
+  .details-product-info-{{ section.id }} .product-info-item.active {
+    display: block;
+  }
+
+  .details-product-info-{{ section.id }} .product-info-content {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease 0.2s, transform 0.4s ease 0.2s;
+  }
+
+  .details-product-info-{{ section.id }} .product-info-item.active .product-info-content {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .details-product-info-{{ section.id }} .product-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0 0 10px;
+    color: {{ section.settings.color_text_left }};
+  }
+
+  .details-product-info-{{ section.id }} .product-description {
+    font-size: 16px;
+    color: {{ section.settings.color_text_left | color_modify: 'alpha', 0.8 }};
+    margin-bottom: 20px;
+    max-width: 55%;
+  }
+
+  .details-product-info-{{ section.id }} .product-button {
+    display: inline-flex;
+    height: 44px;
+    padding: 10px 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background-color: #FFF;
+    color: {{ section.settings.color_button_text }};
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+
+  .details-product-info-{{ section.id }} .product-button:hover {
+    background-color: {{ section.settings.color_button | color_darken: 10 }};
+  }
+
+  .details-product-right-column-{{ section.id }} {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: end;
+    gap: 40px;
+  }
+
+  .details-product-benefits-{{ section.id }} .benefits-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: {{ section.settings.color_text_benefits }};
+  }
+
+  .details-product-benefits-{{ section.id }} ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .details-product-benefits-{{ section.id }} .benefit-item {
+    display: flex;
+    align-items: center;
+  }
+
+  .details-product-benefits-{{ section.id }} .benefit-icon {
+    margin-right: 5px;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    color: {{ section.settings.color_text_benefits }};
+  }
+  .benefit-icon svg{  
+    width: 28px;
+    height: 28px;
+  }
+  .details-product-benefits-{{ section.id }} .benefit-text {
+    font-size: 20px;
+    color: {{ section.settings.color_text_benefits | color_modify: 'alpha', 0.8 }};
+    font-style: normal;
+    font-weight: 700;
+    line-height: 130%;
+  }
+
+  .details-product-selector-{{ section.id }} {
+    display: flex;
+    gap: 15px;
+  }
+
+  .details-product-selector-{{ section.id }} .selector-card {
+    cursor: pointer;
+    border-radius: 16px;
+    transition: width 0.4s ease, background-color 0.4s ease;
+    width: 140px;
+    height: 180px;
+    position: relative;
+    overflow: hidden; /* Garante que o conteúdo extra não vaze */
+    background-color: {{ section.settings.background_color_right | color_darken: 5 }};
+    display: flex;
+    align-items: center;
+  }
+
+  .details-product-selector-{{ section.id }} .selector-card-image {
+    width: 140px;
+    border-radius: 16px;
+    object-fit: cover;
+    height: 100%;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .details-product-selector-{{ section.id }} .selector-card-title {
+    padding: 0 20px;
+    font-size: 16px;
+    font-weight: 500;
+    color: {{ section.settings.color_text_right }};
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .details-product-selector-{{ section.id }} .selector-card:hover .selector-card-title {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .details-product-selector-{{ section.id }} .selector-card:hover .selector-card-image {
+    transform: scale(1.05);
+  }
+
+  .details-product-selector-{{ section.id }} .selector-card.selected {
+    background-color: #FBF8F4;
+    width: 344px;
+    height: 180px;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .details-product-selector-{{ section.id }} .selector-card.selected .selector-card-image {
+    width: 140px;
+    height: 140px;
+    border-radius: 16px;
+  }
+
+  .details-product-selector-{{ section.id }} .selector-card.selected .selector-card-title {
+    opacity: 1;
+    transform: translateX(0);
+    font-weight: bold;
+    color: {{ section.settings.color_text_right }};
+  }
+  @media (max-width: 1080px) {
+    .details-product-container-{{ section.id }}{
+      display:none;
+    }
+  }
+
+{%- endstyle -%}
+
+<div class="details-product-container-{{ section.id }}">
+  <div class="details-product-background-images-{{ section.id }}">
+    {%- liquid
+      assign first_block_found = false
+    -%}
+    {%- for block in section.blocks -%}
+      {%- assign product = block.settings.product -%}
+      {%- if product != blank -%}
+        {%- assign is_first_active = false -%}
+        {%- if first_block_found == false -%}
+          {%- assign is_first_active = true -%}
+          {%- assign first_block_found = true -%}
+        {%- endif -%}
+        <div
+          class="product-background-item {% if is_first_active %}active{% endif %}"
+          data-background-id="{{ product.id }}"
+          style="background-image: url('{{ product.featured_image | image_url: width: 1800 }}');"
+        >&nbsp;</div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="page-width">
+    <div class="details-product-main-content-{{ section.id }}">
+      <div class="details-product-info-{{ section.id }}">
+        {%- liquid
+          assign first_block_found = false
+        -%}
+        {%- for block in section.blocks -%}
+          {%- assign product = block.settings.product -%}
+          {%- if product != blank -%}
+            {%- assign is_first_active = false -%}
+            {%- if first_block_found == false -%}
+              {%- assign is_first_active = true -%}
+              {%- assign first_block_found = true -%}
+            {%- endif -%}
+            <div class="product-info-item {% if is_first_active %}active{% endif %}" data-product-id="{{ product.id }}">
+              <div class="product-info-content">
+                <h2 class="product-title">{{ product.title }}</h2>
+                <div class="product-description rte">
+                  {{ product.description  }}
+                </div>
+                <a href="{{ product.url }}" class="product-button">
+                  Conhecer o {{ product.title }}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M3.75936 12.2418C3.48907 11.9715 3.48907 11.5333 3.75936 11.263L10.0823 4.94002L6.53275 4.9402C6.15049 4.94022 5.84059 4.63035 5.84057 4.2481C5.84055 3.86584 6.15042 3.55594 6.53268 3.55593L11.7534 3.55566C11.9369 3.55565 12.113 3.62858 12.2428 3.75839C12.3726 3.8882 12.4455 4.06426 12.4455 4.24784L12.4453 9.46852C12.4452 9.85077 12.1354 10.1606 11.7531 10.1606C11.3708 10.1606 11.061 9.8507 11.061 9.46845L11.0612 5.91885L4.73819 12.2418C4.4679 12.5121 4.02966 12.5121 3.75936 12.2418Z" fill="{{ section.settings.color_button_text }}"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="details-product-right-column-{{ section.id }}">
+        <div class="details-product-benefits-{{ section.id }}">
+          {%- if section.settings.benefits_title != blank -%}
+            <div class="benefits-title rte">{{ section.settings.benefits_title }}</div>
+          {%- endif -%}
+          <ul>
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'benefit' -%}
+                <li class="benefit-item">
+                  <div class="benefit-icon">
+                    {{ block.settings.icon }}
+                  </div>
+                  <span class="benefit-text">{{ block.settings.text }}</span>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+
+        <div class="details-product-selector-{{ section.id }}">
+          {%- liquid
+            assign first_block_found = false
+          -%}
+          {%- for block in section.blocks -%}
+            {%- assign product = block.settings.product -%}
+            {%- if product != blank -%}
+              {%- assign is_first_active = false -%}
+              {%- if first_block_found == false -%}
+                {%- assign is_first_active = true -%}
+                {%- assign first_block_found = true -%}
+              {%- endif -%}
+              <div
+                class="selector-card {% if is_first_active %}selected{% endif %}"
+                data-target-id="{{ product.id }}"
+              >
+                <img
+                  src="{{ product.featured_image | image_url: width: 200 }}"
+                  alt="{{ product.featured_image.alt | escape }}"
+                  class="selector-card-image"
+                  loading="lazy"
+                  width="auto"
+                  height="auto"
+                >
+                <div class="selector-card-title">{{ product.title }}</div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    console.log('--- [DEBUG] Detalhes do Produto ---');
+    const sectionId = '{{ section.id }}';
+    console.log('ID da Seção:', sectionId);
+
+    const selectorContainer = document.querySelector(`.details-product-selector-${sectionId}`);
+    const infoContainer = document.querySelector(`.details-product-info-${sectionId}`);
+    const backgroundContainer = document.querySelector(`.details-product-background-images-${sectionId}`);
+
+    console.log('Container de Seleção encontrado:', selectorContainer);
+    console.log('Container de Informações encontrado:', infoContainer);
+    console.log('Container de Background encontrado:', backgroundContainer);
+
+    if (!selectorContainer || !infoContainer || !backgroundContainer) {
+      console.error('ERRO: Um ou mais containers essenciais não foram encontrados. O script não será executado.');
+      return;
+    }
+
+    const cards = selectorContainer.querySelectorAll('.selector-card');
+    const infoItems = infoContainer.querySelectorAll('.product-info-item');
+    const backgroundItems = backgroundContainer.querySelectorAll('.product-background-item');
+
+    console.log(`Encontrados ${cards.length} cards, ${infoItems.length} itens de info, ${backgroundItems.length} itens de background.`);
+
+    cards.forEach((card) => {
+      card.addEventListener('click', function () {
+        const targetId = this.dataset.targetId;
+        console.log(`--- Clique detectado! ID do produto alvo: ${targetId} ---`);
+
+        // 1. Atualiza o estilo dos cards
+        cards.forEach((c) => c.classList.remove('selected'));
+        this.classList.add('selected');
+        console.log('Estilo do card atualizado.');
+
+        // 2. Atualiza a visibilidade das informações do produto (coluna da esquerda)
+        infoItems.forEach((item) => {
+          if (item.dataset.productId === targetId) {
+            item.classList.add('active');
+            console.log(`Info do produto ${item.dataset.productId} ativada.`);
+          } else {
+            item.classList.remove('active');
+          }
+        });
+
+        // 3. Atualiza a imagem de fundo
+        backgroundItems.forEach((item) => {
+          if (item.dataset.backgroundId === targetId) {
+            item.classList.add('active');
+            console.log(`Background do produto ${item.dataset.backgroundId} ativado.`);
+          } else {
+            item.classList.remove('active');
+          }
+        });
+        console.log('--- Fim do evento de clique ---');
+      });
+    });
+    console.log('--- Script inicializado com sucesso. ---');
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Detalhes Produto (Custom)",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Cor de fundo geral (fallback)",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "header",
+      "content": "Coluna da Esquerda"
+    },
+    {
+      "type": "color",
+      "id": "color_text_left",
+      "label": "Cor do texto",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "color_button_text",
+      "label": "Cor do texto e ícone do botão",
+      "default": "#656E52"
+    },
+    {
+      "type": "color",
+      "id": "color_button_hover",
+      "label": "Cor do botão 'Ver produto' (Hover)",
+      "default": "#F0EAE4"
+    },
+    {
+      "type": "header",
+      "content": "Coluna da Direita"
+    },
+    {
+      "type": "color",
+      "id": "background_color_right",
+      "label": "Cor de fundo",
+      "default": "#F0EAE4"
+    },
+    {
+      "type": "color",
+      "id": "color_text_right",
+      "label": "Cor do texto (Cards de seleção)",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Benefícios"
+    },
+    {
+      "type": "richtext",
+      "id": "benefits_title",
+      "label": "Título dos benefícios",
+      "default": "<p>Por que escolher este produto?</p>"
+    },
+    {
+      "type": "color",
+      "id": "color_text_benefits",
+      "label": "Cor do texto (Benefícios)",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0, "max": 100, "step": 4, "unit": "px", "label": "t:sections.all.padding.padding_top", "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0, "max": 100, "step": 4, "unit": "px", "label": "t:sections.all.padding.padding_bottom", "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Produto",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Produto"
+        }
+      ]
+    },
+    {
+      "type": "benefit",
+      "name": "Benefício",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "html",
+          "id": "icon",
+          "label": "Ícone do benefício",
+          "default": "<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' d='M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texto do benefício",
+          "default": "Descreva um benefício aqui."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Detalhes Produto (Custom)"
+    }
+  ]
+}
+{% endschema %}

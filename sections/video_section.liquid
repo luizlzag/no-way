@@ -1,0 +1,221 @@
+{%- style -%}
+  .section-{{ section.id }} {
+    /* Variáveis para controle via schema */
+    --video-border-radius: {{ section.settings.border_radius_video }}px;
+    --title-font-size: {{ section.settings.size_title }}px;
+
+    /* Espaçamento padrão da seção */
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .video-section__title-{{ section.id }} {
+    font-size: var(--title-font-size);
+    text-align: center;
+    margin: 0 auto 2rem;
+  }
+
+  .video-section__video-container-{{ section.id }} {
+    position: relative;
+    width: 100%;
+    max-width: 1000px; /* Largura máxima para o vídeo em telas grandes */
+    margin: 0 auto; /* Centraliza o container */
+    
+    /* A chave para o arredondamento funcionar no vídeo/iframe */
+    border-radius: var(--video-border-radius);
+    overflow: hidden;
+
+    /* Garante que o vídeo mantenha a proporção de 16:9 em qualquer tela */
+    aspect-ratio: 16 / 9;
+
+    /* Sombra sutil para destacar, como na imagem de referência */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .video-section__video-container-{{ section.id }} > .shopify-video-player {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .video-section__overlay-{{ section.id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px; /* Espaço entre o texto e o botão */
+    z-index: 2;
+    padding: 2rem;
+    pointer-events: none; /* Permite clicar no vídeo por baixo */
+    background: rgba(0, 0, 0, 0.3); /* Fundo escuro para legibilidade */
+    border-radius: var(--video-border-radius);
+  }
+
+  .video-section__overlay-text-{{ section.id }} {
+    color: #FFF;
+    text-align: center;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; /* 26px */
+    max-width: 600px;
+  }
+
+  .video-section__overlay-button-{{ section.id }} {
+    display: flex;
+    height: 48px;
+    padding: 12px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    background: var(--VERDE, #656E52);
+    color: var(--BRANCO, #FFF);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 140%;
+    text-decoration: none;
+    pointer-events: auto; /* Habilita o clique no botão */
+  }
+
+  /* Ajustes para telas menores */
+  @media screen and (max-width: 768px) {
+    .section-{{ section.id }} {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+    .video-section__title-{{ section.id }} {
+      /* Reduz um pouco o tamanho do título no mobile, se ele for muito grande */
+      font-size: calc(var(--title-font-size) * 0.8);
+    }
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}">
+  <div class="page-width">
+    {%- if section.settings.title != blank -%}
+      <h2 class="video-section__title-{{ section.id }} strong-color">
+        {{ section.settings.title }}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.settings.video != blank -%}
+      <div class="video-section__video-container-{{ section.id }}">
+        {{-
+          section.settings.video
+          | video_tag:
+            class: 'shopify-video-player',
+            playsinline: true,
+            muted: true,
+            loop: true,
+            controls: false,
+            autoplay: true,
+            image_size: '400x'
+        -}}
+
+        {%- if section.settings.overlay_text != blank or section.settings.button_label != blank -%}
+          <div class="video-section__overlay-{{ section.id }}">
+            {%- if section.settings.overlay_text != blank -%}
+              <p class="video-section__overlay-text-{{ section.id }}">{{ section.settings.overlay_text }}</p>
+            {%- endif -%}
+            {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+              <a href="{{ section.settings.button_link }}" class="video-section__overlay-button-{{ section.id }}">
+                <span>{{ section.settings.button_label }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M14.875 7.48419C16.0417 8.15776 16.0417 9.8417 14.875 10.5153L7.375 14.8454C6.20833 15.519 4.75 14.677 4.75 13.3299L4.75 4.6696C4.75 3.32245 6.20833 2.48048 7.375 3.15406L14.875 7.48419ZM14.125 9.21624C14.2917 9.12001 14.2917 8.87945 14.125 8.78322L6.625 4.4531C6.45833 4.35687 6.25 4.47715 6.25 4.6696L6.25 13.3299C6.25 13.5223 6.45833 13.6426 6.625 13.5464L14.125 9.21624Z" fill="white"/>
+                </svg>
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- else -%}
+      {% comment %} Placeholder para quando nenhum vídeo for selecionado {% endcomment %}
+      <div class="video-section__video-container-{{ section.id }}" style="background-color: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#a0a0a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+    {
+        "name": "Video Section",
+        "tag": "section",
+        "class": "section",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Conteúdo da Seção"
+          },
+          {
+              "type": "richtext",
+              "id": "title",
+              "label": "Título da seção",
+              "default": "<p>Como profissionais utilizam</p>"
+          },
+          {
+              "type": "video",
+              "id": "video",
+              "label": "Vídeo"
+          },
+          {
+            "type": "header",
+            "content": "Conteúdo sobre o vídeo"
+          },
+          {
+            "type": "text",
+            "id": "overlay_text",
+            "label": "Texto sobre o vídeo",
+            "default": "Texto de exemplo sobre o vídeo"
+          },
+          {
+            "type": "text",
+            "id": "button_label",
+            "label": "Texto do botão"
+          },
+          {
+            "type": "url",
+            "id": "button_link",
+            "label": "Link do botão"
+          },
+          {
+            "type": "header",
+            "content": "Estilização"
+          },
+          {
+              "type": "range",
+              "id": "size_title",
+              "max": 60,
+              "min": 16,
+              "step": 1,
+              "unit": "px",
+              "label": "Tamanho do título",
+              "default": 32
+          },
+          {
+              "type": "range",
+              "id": "border_radius_video",
+              "max": 50,
+              "min": 0,
+              "step": 1,
+              "unit": "px",
+              "label": "Arredondamento do vídeo",
+              "default": 16
+          }
+        ],
+        "presets": [
+          {
+            "name": "Video Section"
+          }
+        ]
+    }
+{% endschema %}

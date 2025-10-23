@@ -1,0 +1,415 @@
+<style>
+  .gallery-banner-{{ section.id }} {
+    --desktop-content-alignment: {{ section.settings.desktop_content_alignment }};
+    --content-position-x: {{ section.settings.desktop_content_alignment }};
+    --content-position-y: {{ section.settings.desktop_content_position }};
+    --content-padding-mobile: {{ section.settings.content_padding_mobile }}px;
+    --content-padding-desktop: {{ section.settings.content_padding_desktop }}px;
+    --title-font-size-mobile: {{ section.settings.title_font_size_mobile }}px;
+    --title-font-size-desktop: {{ section.settings.title_font_size_desktop }}px;
+    --subtitle-font-size-mobile: {{ section.settings.subtitle_font_size_mobile }}px;
+    --subtitle-font-size-desktop: {{ section.settings.subtitle_font_size_desktop }}px;
+  }
+  .gallery-banner-{{ section.id }}.gallery-banner--two-images {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding: 1%;
+  }
+  .gallery-banner-{{ section.id }} .gallery-banner__title p {
+    margin: 0px;
+  }
+
+  .gallery-banner-{{ section.id }} .gallery-banner__item {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .gallery-banner-{{ section.id }}.gallery-banner--one-image {
+    position: relative;
+    display: grid; /* Usar grid para sobreposição */
+    border-radius: 16px;
+    overflow: hidden;    
+    min-height: 450px; /* Altura mínima para mobile */
+    justify-content: var(--content-position-x);
+    align-items: var(--content-position-y);
+
+  }
+
+  .gallery-banner-{{ section.id }} .gallery-banner__item > img, 
+  .gallery-banner-{{ section.id }}.gallery-banner--one-image > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    grid-area: 1 / 1; /* Coloca a imagem na mesma célula do grid */
+  }
+
+  .gallery-banner-{{ section.id }} .gallery-banner__content {
+    grid-area: 1 / 1; /* Coloca o conteúdo na mesma célula do grid */
+    position: relative; /* Garante que o z-index funcione */
+  }
+
+  .gallery-banner-{{ section.id }} .gallery-banner__item--large {
+    display: grid;
+  }
+
+  .gallery-banner-{{ section.id }} .gallery-banner__item--large > * {
+    grid-area: 1 / 1;
+  }
+
+  .gallery-banner-{{ section.id }} .gallery-banner__item--large .gallery-banner__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+    padding: var(--content-padding-mobile);    
+    color: {{ section.settings.color_text }};
+    position: relative;
+    z-index: 2;
+  }
+
+  .gallery-banner-{{ section.id }}.gallery-banner--one-image .gallery-banner__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: var(--content-position-y);
+    {% if section.settings.desktop_content_alignment == 'left' %}
+      align-items: flex-start;
+    {% elsif section.settings.desktop_content_alignment == 'center' %}
+      align-items: center;
+      text-align: center !important;
+    {% else %}
+      align-items: flex-end;
+    {% endif %}
+    padding: var(--content-padding-mobile);
+    color: #fff;
+    z-index: 2; /* Garante que o conteúdo fique sobre a imagem */
+  }
+
+  .gallery-banner-{{ section.id }} .gallery-banner__logo  {
+    max-width: 40px;
+    max-height: 40px;
+    margin-bottom: 30px;
+  }
+
+  .gallery-banner-{{ section.id }} .gallery-banner__title {
+    color: {{ section.settings.color_text }};
+    font-size: var(--title-font-size-mobile);
+    margin: 0 0 0.5rem 0;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%; /* 67.2px */
+  }
+
+  .gallery-banner-{{ section.id }} .gallery-banner__title strong {
+    font-weight: 700;
+    line-height: 120%;
+    color: {{ section.settings.color_text_strong }};
+  }
+
+
+  .gallery-banner-{{ section.id }} .gallery-banner__subtitle {
+    color: {{ section.settings.color_text }};
+    font-size: var(--subtitle-font-size-mobile);
+    margin: 0 0 1.5rem 0;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%; /* 21.6px */
+  }
+
+  .gallery-banner-{{ section.id }} .gallery-banner__button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: {{ section.settings.color_background_button }};
+    color: #fff;
+    height: 48px;
+    padding: 12px 20px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    font-weight: 700;
+    font-weight: 700;
+    line-height: 140%; /* 25.2px */
+  }
+
+  .gallery-banner-{{ section.id }} .gallery-banner__button:hover {
+    background-color: {{ section.settings.color_background_button | color_darken: 10 }};
+  }
+
+  @media (min-width: 768px) {
+    .gallery-banner-{{ section.id }} .gallery-banner__logo {
+      margin-bottom: 80px;
+    }
+    .gallery-banner-{{ section.id }} {
+      grid-template-columns: 1fr;
+      height: 800px; /* Altura fixa para o desktop */
+      padding: 20px;
+    }
+
+    .gallery-banner-{{ section.id }} .gallery-banner__item--large .gallery-banner__content {
+      padding: var(--content-padding-desktop);
+    }
+
+    .gallery-banner-{{ section.id }}.gallery-banner--one-image .gallery-banner__content {
+      padding: var(--content-padding-desktop);
+    }
+
+    .gallery-banner-{{ section.id }}.gallery-banner--two-images {
+      grid-template-columns: 57% 43%;
+    }
+
+    .gallery-banner-{{ section.id }} .gallery-banner__title {
+      font-size: var(--title-font-size-desktop);
+    }
+
+    .gallery-banner-{{ section.id }} .gallery-banner__subtitle {
+      font-size: var(--subtitle-font-size-desktop);
+    }
+
+    .gallery-banner-{{ section.id }} .gallery-banner__item--large {
+      display: block; /* Restaura o comportamento padrão no desktop */
+    }
+
+    .gallery-banner-{{ section.id }} .gallery-banner__item--large .gallery-banner__content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      color: #fff;
+    }
+
+    .gallery-banner-{{ section.id }}.gallery-banner--one-image .gallery-banner__content {
+      text-align: var(--desktop-content-alignment);
+    }
+
+    .gallery-banner-{{ section.id }}.gallery-banner--one-image > img {
+      border-radius: 16px;
+    }
+  }
+</style>
+
+{%- liquid
+  assign has_one_block = false
+  if section.blocks.size == 1
+    assign has_one_block = true
+  endif
+-%}
+
+{%- capture content -%}
+  <div class="gallery-banner__content">
+    {%- if section.settings.logo != blank -%}
+      <img src="{{ section.settings.logo | image_url: width: 100 }}" alt="{{ section.settings.logo.alt | escape }}" width="auto" height="auto" class="gallery-banner__logo" loading="lazy">
+    {%- endif -%}
+    {%- if section.settings.title_text != blank -%}
+      <div class="gallery-banner__title">{{ section.settings.title_text }}</div>
+    {%- endif -%}
+    {%- if section.settings.subtitle_text != blank -%}
+      <p class="gallery-banner__subtitle">{{ section.settings.subtitle_text }}</p>
+    {%- endif -%}
+    {%- if section.settings.button_text != blank and section.settings.button_link != blank -%}
+      <a href="{{ section.settings.button_link }}" class="gallery-banner__button">
+        {{ section.settings.button_text }}
+        {%- render 'arrow-link-top' -%}
+      </a>
+    {%- endif -%}
+  </div>
+{%- endcapture -%}
+
+<div class="gallery-banner-{{ section.id }} gallery-banner {% if has_one_block %}gallery-banner--one-image{% else %}gallery-banner--two-images{% endif %}">
+  {% if has_one_block %}
+    {%- for block in section.blocks -%}
+      {%- if block.settings.image != blank -%}
+        <img src="{{ block.settings.image | image_url: width: 1920 }}" alt="{{ block.settings.image.alt | escape }}" loading="lazy" width="auto" height="auto">
+      {%- else -%}
+        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+      {{ content }}
+    {%- endfor -%}
+  {% else %}
+    {%- for block in section.blocks -%}
+      <div class="gallery-banner__item {% if forloop.first %}gallery-banner__item--large{% else %}gallery-banner__item--small{% endif %}">
+          {%- if block.settings.image != blank -%}
+            <img src="{{ block.settings.image | image_url: width: 1200 }}" alt="{{ block.settings.image.alt | escape }}" loading="lazy" width="auto" height="auto">
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+          {%- if forloop.first -%}{{ content }}{%- endif -%}
+      </div>
+    {%- endfor -%}
+  {% endif %}
+</div>
+
+
+{% schema %}
+    {
+        "name": "Galeria Banner",
+        "settings": [
+            {
+                "type": "richtext",
+                "id": "title_text",
+                "label": "Titulo da seção"
+            },
+            {
+                "type": "text",
+                "id": "subtitle_text",
+                "label": "Subtitulo da seção"
+            },
+            {
+                "type": "text",
+                "id": "button_text",
+                "label": "Texto do botão"
+            },
+            {
+                "type": "url",
+                "id": "button_link",
+                "label": "Link do botão"
+            },
+            {
+                "type": "image_picker",
+                "id": "logo",
+                "label": "logo"
+            },
+            {
+                "type": "color",
+                "id": "color_text_strong",
+                "label": "Cor do texto forte",
+                "default": "#656E52"
+            },
+            {
+                "type": "color",
+                "id": "color_text",
+                "label": "Cor do texto",
+                "default": "#000"
+            },
+            {
+                "type": "color",
+                "id": "color_background_button",
+                "label": "Cor de fundo do botão",
+                "default": "#656E52"
+            },
+            {
+                "type": "header",
+                "content": "Tipografia"
+            },
+            {
+                "type": "range",
+                "id": "title_font_size_mobile",
+                "min": 16,
+                "max": 60,
+                "step": 1,
+                "unit": "px",
+                "label": "Tamanho do título (Mobile)",
+                "default": 32
+            },
+            {
+                "type": "range",
+                "id": "title_font_size_desktop",
+                "min": 24,
+                "max": 100,
+                "step": 1,
+                "unit": "px",
+                "label": "Tamanho do título (Desktop)",
+                "default": 56
+            },
+            {
+                "type": "range",
+                "id": "subtitle_font_size_mobile",
+                "min": 12,
+                "max": 30,
+                "step": 1,
+                "unit": "px",
+                "label": "Tamanho da descrição (Mobile)",
+                "default": 16
+            },
+            {
+                "type": "range",
+                "id": "subtitle_font_size_desktop",
+                "min": 14,
+                "max": 50,
+                "step": 1,
+                "unit": "px",
+                "label": "Tamanho da descrição (Desktop)",
+                "default": 18
+            },
+            {
+                "type": "header",
+                "content": "Layout (Apenas para 1 imagem)"
+            },
+            {
+                "type": "range",
+                "id": "content_padding_mobile",
+                "min": 0,
+                "max": 100,
+                "step": 2,
+                "unit": "px",
+                "label": "Padding do conteúdo (Mobile)",
+                "default": 30
+            },
+            {
+                "type": "range",
+                "id": "content_padding_desktop",
+                "min": 0,
+                "max": 500,
+                "step": 5,
+                "unit": "px",
+                "label": "Padding do conteúdo (Desktop)",
+                "default": 90
+            },
+            {
+                "type": "select",
+                "id": "desktop_content_position",
+                "options": [
+                  { "value": "flex-start", "label": "Superior" },
+                  { "value": "center", "label": "Meio" },
+                  { "value": "flex-end", "label": "Inferior" }
+                ],
+                "default": "center",
+                "label": "Posição do conteúdo vertical"
+            },
+            {
+                "type": "select",
+                "id": "desktop_content_alignment",
+                "options": [
+                  {
+                    "value": "left",
+                    "label": "Esquerda"
+                  },
+                  {
+                    "value": "center",
+                    "label": "Centro"
+                  },
+                  {
+                    "value": "right",
+                    "label": "Direita"
+                  }
+                ],
+                "default": "left",
+                "label": "Alinhamento do conteúdo"
+            }
+        ],"blocks": [
+            {
+                "type": "image",
+                "name": "Imagem",
+                "limit": 2,
+                "settings": [
+                    {
+                        "type": "image_picker",
+                        "id": "image",
+                        "label": "Imagem"
+                    }
+                ]
+            }
+        
+        ],
+        "presets": [
+            {
+                "name": "Galeria Banner"
+            }
+        ]
+    }
+{% endschema %}

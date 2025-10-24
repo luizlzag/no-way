@@ -11,11 +11,11 @@
     }
   }
 
-  .coming-soon {
+  .coming-soon-{{ section.id }} {
     color: rgb(var(--color-foreground));
   }
 
-  .coming-soon__container {
+  .coming-soon__container-{{ section.id }} {
     display: flex;
     width: 100%;
     max-width: 1216px;
@@ -25,7 +25,7 @@
     margin: 0 auto;
   }
 
-  .coming-soon__title {
+  .coming-soon__title-{{ section.id }} {
     color: var(--gray-700, #565557);
     font-size: 40px;
     font-style: normal;
@@ -33,48 +33,61 @@
     line-height: normal;
   }
 
-  .coming-soon__grid {
+  .coming-soon__grid-{{ section.id }} {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: center;
     gap: 32px;
     align-self: stretch;
     width: 100%;
   }
 
-  .coming-soon__item {
+  .coming-soon__item-{{ section.id }} {
     flex: 1 0 0;
   }
 
-  .coming-soon__card {
+  .coming-soon__card-{{ section.id }} {
     display: flex;
     padding: 24px;
     align-items: flex-start;
     gap: 24px;
-    flex: 1 0 0;
     background: rgba(255, 255, 255, 0.8);
-    border-radius: 8px;
+    border-radius: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .coming-soon__image {
+  .coming-soon__image-{{ section.id }} {
     flex-shrink: 0;
   }
 
-  .coming-soon__image img {
+  .coming-soon__image-{{ section.id }} img {
     width: 160.361px;
     height: 284.004px;
     aspect-ratio: 160.36/284.00;
-    border-radius: 8px;
+    border-radius: 16px;
   }
 
-  .coming-soon__content {
+  .coming-soon__content-{{ section.id }} {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-around;
+  }
+  
+  .coming-soon__product-info-{{ section.id }} {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 24px;
   }
 
-  .coming-soon__product-title {
+  #shopify-section-{{ section.id }}{
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  .coming-soon__product-title-{{ section.id }} {
     color: var(--gray-700, #565557);
     font-size: 24px;
     font-style: normal;
@@ -83,7 +96,7 @@
     margin: 0;
   }
 
-  .coming-soon__description {
+  .coming-soon__description-{{ section.id }} {
     color: var(--gray-600, #6B6B6B);
     font-family: var(--font-body-family);
     font-size: 14px;
@@ -92,7 +105,7 @@
     line-height: 1.4;
   }
 
-  .coming-soon__progress {
+  .coming-soon__progress-{{ section.id }} {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -100,7 +113,7 @@
     align-self: stretch;
   }
 
-  .coming-soon__progress-text {
+  .coming-soon__progress-text-{{ section.id }} {
     color: var(--gray-700, #565557);
     font-family: var(--font-body-family);
     leading-trim: both;
@@ -111,7 +124,7 @@
     line-height: normal;
   }
 
-  .coming-soon__progress-bar {
+  .coming-soon__progress-bar-{{ section.id }} {
     min-width: 100%;
     width: 100%;
     height: 16px;
@@ -121,58 +134,64 @@
     overflow: hidden;
   }
 
-  .coming-soon__progress-fill {
+  .coming-soon__progress-fill-{{ section.id }} {
     width: 100%;
     height: 100%;
     background-color: #4CAF50;
-    border-radius: 4px;
-    transition: transform 0.3s ease;
+    border-radius: 16px;
+    transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  .coming-soon__progress-fill-{{ section.id }}.animate {
+    transform: scaleX(var(--progress-value, 0));
   }
 
   /* Responsive Design */
   @media screen and (max-width: 990px) {
-    .coming-soon__container {
+    .coming-soon__container-{{ section.id }} {
       max-width: 100%;
       gap: 32px;
     }
     
-    .coming-soon__title {
+    .coming-soon__title-{{ section.id }} {
       font-size: 32px;
     }
     
-    .coming-soon__grid {
+    .coming-soon__grid-{{ section.id }} {
       flex-direction: column;
       gap: 24px;
     }
     
-    .coming-soon__item {
+    .coming-soon__item-{{ section.id }} {
       width: 100%;
+      height: 100%;
     }
   }
 
   @media screen and (max-width: 749px) {
-    .coming-soon__container {
+    .coming-soon__container-{{ section.id }} {
       gap: 24px;
     }
     
-    .coming-soon__title {
+    .coming-soon__title-{{ section.id }} {
       font-size: 28px;
     }
     
-    .coming-soon__card {
+    .coming-soon__card-{{ section.id }} {
       flex-direction: column;
       text-align: center;
       padding: 20px;
     }
     
-    .coming-soon__image img {
+    .coming-soon__image-{{ section.id }} img {
       width: 120px;
       height: 212px;
       aspect-ratio: 160.36/284.00;
     }
     
-    .coming-soon__grid {
+    .coming-soon__grid-{{ section.id }} {
       gap: 20px;
     }
   }
@@ -180,25 +199,25 @@
 
 
   <div class="page-width">
-    <div class="coming-soon__container">
+    <div class="coming-soon__container-{{ section.id }}">
       {%- if section.settings.title != blank -%}
-        <div class="coming-soon__title">
+        <div class="coming-soon__title-{{ section.id }}">
           {{ section.settings.title }}
         </div>
       {%- endif -%}
       
-      <div class="coming-soon__grid">
+      <div class="coming-soon__grid-{{ section.id }}">
         {%- for block in section.blocks -%}
           {%- case block.type -%}
             {%- when 'product_item' -%}
-              <div class="coming-soon__item" {{ block.shopify_attributes }}>
-                <div class="coming-soon__card"
+              <div class="coming-soon__item-{{ section.id }}" {{ block.shopify_attributes }}>
+                <div class="coming-soon__card-{{ section.id }}"
                   {%- if block.settings.card_background_color != blank -%}
                     style="background-color: {{ block.settings.card_background_color }};"
                   {%- endif -%}
                 >
                   {%- if block.settings.image != blank -%}
-                    <div class="coming-soon__image">
+                    <div class="coming-soon__image-{{ section.id }}">
                       {{ block.settings.image | image_url: width: 160, height: 284 | image_tag: 
                         alt: block.settings.image.alt | default: block.settings.title,
                         loading: 'lazy'
@@ -206,41 +225,42 @@
                     </div>
                   {%- endif -%}
                   
-                  <div class="coming-soon__content">
-                    {%- if block.settings.title != blank -%}
-                      <h3 class="coming-soon__product-title"
-                        {%- if block.settings.primary_text_color != blank -%}
-                          style="color: {{ block.settings.primary_text_color }};"
+                  <div class="coming-soon__content-{{ section.id }}">
+                    <div class="coming-soon__product-info-{{ section.id }}">
+                        {%- if block.settings.title != blank -%}
+                        <h3 class="coming-soon__product-title-{{ section.id }}"
+                            {%- if block.settings.primary_text_color != blank -%}
+                            style="color: {{ block.settings.primary_text_color }};"
+                            {%- endif -%}
+                        >{{ block.settings.title }}</h3>
                         {%- endif -%}
-                      >{{ block.settings.title }}</h3>
-                    {%- endif -%}
-                    
-                    {%- if block.settings.description != blank -%}
-                      <div class="coming-soon__description"
-                        {%- if block.settings.secondary_text_color != blank -%}
-                          style="color: {{ block.settings.secondary_text_color }};"
+                        
+                        {%- if block.settings.description != blank -%}
+                        <div class="coming-soon__description-{{ section.id }}"
+                            {%- if block.settings.secondary_text_color != blank -%}
+                            style="color: {{ block.settings.secondary_text_color }};"
+                            {%- endif -%}
+                        >
+                            {{ block.settings.description }}
+                        </div>
                         {%- endif -%}
-                      >
-                        {{ block.settings.description }}
-                      </div>
-                    {%- endif -%}
+                    </div>
                     
                     {%- if block.settings.progress_percentage != blank -%}
-                      <div class="coming-soon__progress">
-                        <div class="coming-soon__progress-text"
+                      <div class="coming-soon__progress-{{ section.id }}">
+                        <div class="coming-soon__progress-text-{{ section.id }}"
                           {%- if block.settings.primary_text_color != blank -%}
                             style="color: {{ block.settings.primary_text_color }};"
                           {%- endif -%}
                         >{{ block.settings.progress_percentage }}% concluído</div>
-                        <div class="coming-soon__progress-bar"
+                        <div class="coming-soon__progress-bar-{{ section.id }}"
                           {%- if block.settings.progress_bar_background_color != blank -%}
                             style="background-color: {{ block.settings.progress_bar_background_color }};"
                           {%- endif -%}
                         >
-                          <div class="coming-soon__progress-fill" style="transform: scaleX({{ block.settings.progress_percentage | divided_by: 100.0 }});
-                            {%- if block.settings.progress_bar_fill_color != blank -%}
-                              background-color: {{ block.settings.progress_bar_fill_color }};
-                            {%- endif -%}
+                          <div class="coming-soon__progress-fill-{{ section.id }}" 
+                            data-progress="{{ block.settings.progress_percentage }}"
+                            style="{%- if block.settings.progress_bar_fill_color != blank -%}background-color: {{ block.settings.progress_bar_fill_color }};{%- endif -%}
                           ">
                         &nbsp;
                         </div>
@@ -255,6 +275,42 @@
       </div>
     </div>
   </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const progressBars = document.querySelectorAll('.coming-soon__progress-fill-{{ section.id }}');
+  
+  const observerOptions = {
+    threshold: 0.3,
+    rootMargin: '0px 0px -50px 0px'
+  };
+  
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const progressFill = entry.target;
+        const progressValue = progressFill.getAttribute('data-progress');
+        
+        // Adiciona a variável CSS e a classe para animar
+        progressFill.style.setProperty('--progress-value', progressValue / 100);
+        
+        // Delay pequeno para garantir que o CSS foi aplicado
+        setTimeout(() => {
+          progressFill.classList.add('animate');
+        }, 100);
+        
+        // Para de observar este elemento após a animação
+        observer.unobserve(progressFill);
+      }
+    });
+  }, observerOptions);
+  
+  // Observa cada barra de progresso
+  progressBars.forEach(bar => {
+    observer.observe(bar);
+  });
+});
+</script>
 
 {% schema %}
 {

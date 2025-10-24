@@ -1,0 +1,85 @@
+<style>
+    #shopify-section-{{ section.id }}{
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .join-whatsapp-group-{{ section.id }} {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .join-whatsapp-group-link-{{ section.id }} {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        text-decoration: none;
+    }
+    .join-whatsapp-group-img-{{ section.id }} {
+        width: 100%;
+        height: auto;
+        max-width: 1400px;
+        max-height: 400px;
+        flex-shrink: 0;
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="page-width join-whatsapp-group-{{ section.id }}">
+    <a href="{{ section.settings.group_link }}" target="_blank" rel="noopener" class="join-whatsapp-group-link-{{ section.id }}">
+        <div class="where-magic-starts-image-{{ section.id }}">
+            {% if section.settings.image_left %}
+                {{ section.settings.image_left | image_url: width: 1400, height: 400 | image_tag: 
+                     alt: 'Entrar no grupo WhatsApp',
+                     loading: 'lazy' }}
+            {% else %}
+                <div style="width: 100%; height: 400px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
+                    Imagem não selecionada
+                </div>
+            {% endif %}
+        </div>
+    </a>
+</div>
+
+{% schema %}
+{
+    "name": "Join WhatsApp Group",
+    "settings": [
+        {
+            "type": "text",
+            "id": "group_link",
+            "label": "Link",
+        },
+        {
+            "type": "image_picker",
+            "id": "image_left",
+            "label": "Imagem",
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "label": "Padding Top",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "default": 24
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "label": "Padding Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "default": 24
+        }
+
+    ]
+    ,
+    "presets": [
+        {
+            "name": "Join WhatsApp Group"
+        }
+    ]
+}
+{% endschema %}

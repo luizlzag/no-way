@@ -1,0 +1,112 @@
+<div class="container-collections-{{ section.id }} page-width">
+   <div class="container-collections-header-{{ section.id }}">
+    <h2 class="title-collections-{{ section.id }}">{{ section.settings.title }}</h2>
+    <a href="{{ section.settings.link }}" class="link-collections-{{ section.id }}">Descobrir mais</a>
+   </div>
+   <div class="container-collections-content-{{ section.id }}">
+    {% for block in section.blocks %}
+        <div class="collection-card-{{ section.id }}" style="--box-shadow-color: {{ block.settings.color_box_shadow }}; --bg-image: url('{{ block.settings.image_background | image_url: width: 400 }}');">
+            <a href="{{ block.settings.collection.url }}">
+                <img src="{{ block.settings.collection.featured_image | image_url: width: 180, height: 283 }}" alt="{{ block.settings.collection.featured_image.alt | escape }}" width="auto" height="auto" loading="lazy" />
+                <h3 class="title-collection-{{ section.id }}">{{ block.settings.title }}</h3>
+            </a>
+        </div>
+    {% endfor %}
+   </div>
+</div>
+
+
+<style>
+    .title-collection-{{ section.id }} {
+        text-align: center;
+        color: var(--Purple-100, #EDE5F6);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+    }
+    .collection-card-{{ section.id }} {
+        display: flex;
+        padding: 48px;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        flex: 1 0 0;
+        align-self: stretch;
+        border-radius: 16px;
+        border: 1px solid #000;
+        background: var(--bg-image, none) lightgray center / cover no-repeat;
+        box-shadow: -6px 6px 0 0 var(--box-shadow-color, #FFFFFF);
+    }
+    .container-collections-content-{{ section.id }} {
+        display: flex;
+        gap: 31px;
+        align-items: center;
+        align-items: stretch;
+    }
+    .container-collections-header-{{ section.id }}{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+</style>
+
+
+
+{% schema %}
+    {
+        "name": "Collections Cards",
+        "settings": [
+            {
+                "type": "text",
+                "id": "title",
+                "label": "Title",
+                "default": "Alquimia de Sabores"
+            },
+            {
+                "type": "url",
+                "id": "link",
+                "label": "Link",
+                "default": "/collections"
+            }
+        ],"blocks": [
+            {
+                "type": "collection",
+                "name": "Collection",
+                "settings": [
+                   {
+                     "type": "collection",
+                     "id": "collection",
+                     "label": "Collection"
+                   },
+                   {
+                     "type": "text",
+                     "id": "title",
+                     "label": "Title",
+                     "default": "Collection Title"
+                    },
+                    {
+                        "type": "image_picker",
+                        "id": "image_background",
+                        "label": "Image Background"
+                    },
+                    {
+                        "type": "color",
+                        "id": "color_box_shadow",
+                        "label": "Color Box Shadow",
+                        "default": "#FFFFFF"
+                    }
+                ]
+            },
+        ],"presets": [
+           {
+            "name": "Collections Cards"
+           }
+        ]
+        
+    }
+{% endschema %}

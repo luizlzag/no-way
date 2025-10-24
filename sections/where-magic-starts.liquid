@@ -1,17 +1,154 @@
+
+<style>
+
+   #shopify-section-{{ section.id }}{
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  .where-magic-starts-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  .where-magic-starts-container-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .where-magic-starts-image-{{ section.id }} {
+    width: 600px;
+    height: 600px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  .where-magic-starts-image-{{ section.id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .where-magic-starts-content-{{ section.id }} {
+    flex: 1;
+    margin-top: 70px;
+  }
+
+  .where-magic-starts-title-{{ section.id }} {
+    color: {{ section.settings.title_text_color }};
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 100%;
+    margin: 0 0 40px 0;
+    leading-trim: both;
+    text-edge: cap;
+  }
+
+  .where-magic-starts-paragraph-{{ section.id }} {
+    color: {{ section.settings.paragraph_text_color }};
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%;
+    margin: 0;
+    leading-trim: both;
+    text-edge: cap;
+  }
+
+  @media (max-width: 768px) {
+    .where-magic-starts-container-{{ section.id }} {
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .where-magic-starts-image-{{ section.id }} {
+      width: 100%;
+      max-width: 400px;
+      height: 400px;
+    }
+
+    .where-magic-starts-content-{{ section.id }} {
+      margin-top: 0;
+    }
+
+    .where-magic-starts-title-{{ section.id }} {
+      font-size: 36px;
+      margin-bottom: 24px;
+    }
+
+    .where-magic-starts-paragraph-{{ section.id }} {
+      font-size: 18px;
+    }
+  }
+</style>
+
+<section class="page-width">
+  <div class="where-magic-starts-container-{{ section.id }}">
+    <div class="where-magic-starts-image-{{ section.id }}">
+      {% if section.settings.background_image %}
+        {{ section.settings.background_image | image_url: width: 600, height: 600 | image_tag: 
+           alt: section.settings.section_title,
+           loading: 'lazy' }}
+      {% else %}
+        <div style="width: 100%; height: 100%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
+          Imagem não selecionada
+        </div>
+      {% endif %}
+    </div>
+    
+    <div class="where-magic-starts-content-{{ section.id }}">
+      <h2 class="where-magic-starts-title-{{ section.id }}">
+        {{ section.settings.section_title }}
+      </h2>
+      
+      <div class="where-magic-starts-paragraph-{{ section.id }}">
+        {{ section.settings.paragraph_content }}
+      </div>
+    </div>
+  </div>
+</section>
+
 {% schema %}
     {
         "name": "Magic Starts Section",
         "settings": [
+
+            // Title Text Color
+            {
+                "type": "color",
+                "id": "title_text_color",
+                "label": "Cor do Texto do Título",
+                "default": "#000000"
+            },
+
+            // Paragraph Text Color
+            {
+                "type": "color",
+                "id": "paragraph_text_color",
+                "label": "Cor do Texto do Parágrafo",
+                "default": "#000000"
+            },
+
+            // Paragraph content
+            {
+                "type": "richtext",
+                "id": "paragraph_content",
+                "label": "Conteúdo do Parágrafo",
+                "default": "<p>A No Way Back nasceu de uma ideia ousada: transformar suplementos em algo que ninguém jamais havia provado. Por anos, vimos o mesmo cenário, pós sem sabor, experiências sem prazer. Decidimos quebrar essa lógica. Criamos fórmulas que unem ciência e criatividade, dando vida a sabores inéditos no mundo. Aqui, cada produto é uma jornada: do primeiro gole à última colherada, você descobre que suplementar pode ser tão prazeroso quanto necessário. Não seguimos o caminho tradicional, criamos o nosso próprio. E, uma vez que você prova, não há volta.</p>"
+            },
+
             {
                 "type": "text",
                 "id": "section_title",
-                "label": "Section Title",
-                "default": "Where Magic Starts"
+                "label": "Título da Seção",
+                "default": "Onde a magia começou"
             },
             {
                 "type": "image_picker",
                 "id": "background_image",
-                "label": "Background Image"
+                "label": "Imagem"
             },
             {
                 "type": "range",
@@ -32,6 +169,20 @@
                 "unit": "px",
                 "label": "Padding bottom",
                 "default": 36
+            }
+        ],
+        "presets": [
+            {
+                "name": "Magic Starts Section",
+                "settings": {
+                    "section_title": "Onde a magia começou",
+                    "padding_top": 36,
+                    "padding_bottom": 36,
+                    "paragraph_content": "A No Way Back nasceu de uma ideia ousada: transformar suplementos em algo que ninguém jamais havia provado. Por anos, vimos o mesmo cenário, pós sem sabor, experiências sem prazer. Decidimos quebrar essa lógica. Criamos fórmulas que unem ciência e criatividade, dando vida a sabores inéditos no mundo. Aqui, cada produto é uma jornada: do primeiro gole à última colherada, você descobre que suplementar pode ser tão prazeroso quanto necessário. Não seguimos o caminho tradicional, criamos o nosso próprio. E, uma vez que você prova, não há volta.",
+                    "title_text_color": "#000000",
+                    "paragraph_text_color": "#000000",
+                    "background_image": ""
+                }
             }
         ]
     }

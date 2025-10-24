@@ -1,0 +1,371 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .coming-soon {
+    color: rgb(var(--color-foreground));
+  }
+
+  .coming-soon__container {
+    display: flex;
+    width: 100%;
+    max-width: 1216px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+    margin: 0 auto;
+  }
+
+  .coming-soon__title {
+    color: var(--gray-700, #565557);
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  .coming-soon__grid {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    align-self: stretch;
+    width: 100%;
+  }
+
+  .coming-soon__item {
+    flex: 1 0 0;
+  }
+
+  .coming-soon__card {
+    display: flex;
+    padding: 24px;
+    align-items: flex-start;
+    gap: 24px;
+    flex: 1 0 0;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .coming-soon__image {
+    flex-shrink: 0;
+  }
+
+  .coming-soon__image img {
+    width: 160.361px;
+    height: 284.004px;
+    aspect-ratio: 160.36/284.00;
+    border-radius: 8px;
+  }
+
+  .coming-soon__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .coming-soon__product-title {
+    color: var(--gray-700, #565557);
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin: 0;
+  }
+
+  .coming-soon__description {
+    color: var(--gray-600, #6B6B6B);
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .coming-soon__progress {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+  }
+
+  .coming-soon__progress-text {
+    color: var(--gray-700, #565557);
+    font-family: var(--font-body-family);
+    leading-trim: both;
+    text-edge: cap;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  .coming-soon__progress-bar {
+    min-width: 100%;
+    width: 100%;
+    height: 16px;
+    align-self: stretch;
+    background-color: #E0E0E0;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .coming-soon__progress-fill {
+    width: 100%;
+    height: 100%;
+    background-color: #4CAF50;
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+    transform-origin: left;
+  }
+
+  /* Responsive Design */
+  @media screen and (max-width: 990px) {
+    .coming-soon__container {
+      max-width: 100%;
+      gap: 32px;
+    }
+    
+    .coming-soon__title {
+      font-size: 32px;
+    }
+    
+    .coming-soon__grid {
+      flex-direction: column;
+      gap: 24px;
+    }
+    
+    .coming-soon__item {
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .coming-soon__container {
+      gap: 24px;
+    }
+    
+    .coming-soon__title {
+      font-size: 28px;
+    }
+    
+    .coming-soon__card {
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .coming-soon__image img {
+      width: 120px;
+      height: 212px;
+      aspect-ratio: 160.36/284.00;
+    }
+    
+    .coming-soon__grid {
+      gap: 20px;
+    }
+  }
+{%- endstyle -%}
+
+
+  <div class="page-width">
+    <div class="coming-soon__container">
+      {%- if section.settings.title != blank -%}
+        <div class="coming-soon__title">
+          {{ section.settings.title }}
+        </div>
+      {%- endif -%}
+      
+      <div class="coming-soon__grid">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'product_item' -%}
+              <div class="coming-soon__item" {{ block.shopify_attributes }}>
+                <div class="coming-soon__card"
+                  {%- if block.settings.card_background_color != blank -%}
+                    style="background-color: {{ block.settings.card_background_color }};"
+                  {%- endif -%}
+                >
+                  {%- if block.settings.image != blank -%}
+                    <div class="coming-soon__image">
+                      {{ block.settings.image | image_url: width: 160, height: 284 | image_tag: 
+                        alt: block.settings.image.alt | default: block.settings.title,
+                        loading: 'lazy'
+                      }}
+                    </div>
+                  {%- endif -%}
+                  
+                  <div class="coming-soon__content">
+                    {%- if block.settings.title != blank -%}
+                      <h3 class="coming-soon__product-title"
+                        {%- if block.settings.primary_text_color != blank -%}
+                          style="color: {{ block.settings.primary_text_color }};"
+                        {%- endif -%}
+                      >{{ block.settings.title }}</h3>
+                    {%- endif -%}
+                    
+                    {%- if block.settings.description != blank -%}
+                      <div class="coming-soon__description"
+                        {%- if block.settings.secondary_text_color != blank -%}
+                          style="color: {{ block.settings.secondary_text_color }};"
+                        {%- endif -%}
+                      >
+                        {{ block.settings.description }}
+                      </div>
+                    {%- endif -%}
+                    
+                    {%- if block.settings.progress_percentage != blank -%}
+                      <div class="coming-soon__progress">
+                        <div class="coming-soon__progress-text"
+                          {%- if block.settings.primary_text_color != blank -%}
+                            style="color: {{ block.settings.primary_text_color }};"
+                          {%- endif -%}
+                        >{{ block.settings.progress_percentage }}% concluído</div>
+                        <div class="coming-soon__progress-bar"
+                          {%- if block.settings.progress_bar_background_color != blank -%}
+                            style="background-color: {{ block.settings.progress_bar_background_color }};"
+                          {%- endif -%}
+                        >
+                          <div class="coming-soon__progress-fill" style="transform: scaleX({{ block.settings.progress_percentage | divided_by: 100.0 }});
+                            {%- if block.settings.progress_bar_fill_color != blank -%}
+                              background-color: {{ block.settings.progress_bar_fill_color }};
+                            {%- endif -%}
+                          ">
+                        &nbsp;
+                        </div>
+                        </div>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+
+{% schema %}
+{
+  "name": "Coming Soon",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "Em Criação: Novos Suplementos NWB",
+      "label": "Título"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_item",
+      "name": "Produto",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Imagem do produto"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Creatina Pink 300g",
+          "label": "Nome do produto"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "default": "Não é só creatina. É a evolução do suplemento mais pesquisado do mundo, agora com uma identidade única e disruptiva...",
+          "label": "Descrição"
+        },
+        {
+          "type": "range",
+          "id": "progress_percentage",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "label": "Porcentagem de progresso",
+          "default": 80
+        },
+        {
+          "type": "color",
+          "id": "card_background_color",
+          "label": "Cor de fundo do card",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "primary_text_color",
+          "label": "Cor do texto principal",
+          "default": "#565557"
+        },
+        {
+          "type": "color",
+          "id": "secondary_text_color",
+          "label": "Cor do texto secundário",
+          "default": "#6B6B6B"
+        },
+        {
+          "type": "color",
+          "id": "progress_bar_background_color",
+          "label": "Cor de fundo da barra de progresso",
+          "default": "#E0E0E0"
+        },
+        {
+          "type": "color",
+          "id": "progress_bar_fill_color",
+          "label": "Cor de preenchimento da barra de progresso",
+          "default": "#4CAF50"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Coming Soon",
+      "blocks": [
+        {
+          "type": "product_item"
+        },
+        {
+          "type": "product_item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
